@@ -1,0 +1,148 @@
+<h1 class="display-2">Create new Location</h1>
+
+<br>
+
+<form [formGroup]="locationForm" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="venueName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Venue Name:
+          <!--span class="text-danger" *ngIf="locationForm.get('venueName').errors && locationForm.get('venueName').hasError('required')">*</span-->
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="venueName" class="form-control" type="text" formControlName="venueName">
+        </div>
+        <small *ngIf="venueName.touched && venueName.hasError('required')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Venue Name is required
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="street" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">Street: </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="street" class="form-control" type="text" formControlName="street">
+        </div>
+        <small *ngIf="street.touched && street.hasError('required')" class="text-md-end text-danger col-md-2 col-lg-6">
+          Street is required
+        </small>
+      </div>
+    </div>
+
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="city" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">City: </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="city" class="form-control" type="text" formControlName="city">
+        </div>
+        <small *ngIf="city.touched && city.hasError('required')" class="text-md-end text-danger col-md-2 col-lg-6">
+          City is required
+        </small>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="country" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">Country: </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="country" class="form-control" type="text" formControlName="country">
+        </div>
+        <small *ngIf="country.touched && country.hasError('required')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Country is required
+        </small>
+      </div>
+    </div>
+
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="postalCode" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">Postal Code: </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="postalCode" class="form-control" type="number" formControlName="postalCode">
+        </div>
+        <small *ngIf="postalCode.touched && postalCode.hasError('required')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Postal Code is required
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <br><br>
+
+  <div formArrayName="stages">
+    <div class="mb-2 col-lg-12">
+      <div class="row">
+        <h3 class="display-8 col-md-10 col-lg-11">Stages</h3>
+        <button type="button" class="btn btn-primary col-md-10 col-lg-1" (click)="addStage()">Add</button>
+      </div>
+    </div>
+
+    <div class="mb-2 col-lg-12">
+      <small *ngIf="stages.length === 0" class="text-md-end text-danger col-md-2 col-lg-6">
+        There must be at least one Stage
+      </small>
+    </div>
+
+    <div *ngFor="let stage of stages.controls; index as i">
+      <ng-container [formGroupName]="i">
+        <div class="row">
+          <div class="mb-2 col-lg-6">
+            <div class="row">
+              <label for="stageName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+                Name:
+              </label>
+              <div class="col-md-10 col-lg-8">
+                <input id="stageName" class="form-control" type="text" formControlName="name">
+              </div>
+              <small *ngIf="stage.get('name').touched && stage.get('name').hasError('required')"
+                     class="text-md-end text-danger col-md-2 col-lg-6">
+                Stage Name is required
+              </small>
+            </div>
+          </div>
+
+          <div class="mb-2 col-lg-5">
+            <div class="row">
+              <label for="stageTemplate" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+                Template:
+              </label>
+              <div class="col-md-10 col-lg-8">
+                <div class="col-md-10 col-lg-8">
+                  <select id="stageTemplate" class="form-select" formControlName="stageTemplateId">
+                    <option *ngFor="let stagePlan of stagePlans" [value]="stagePlan.stageId">
+                      {{stagePlan.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-danger mb-2 col-lg-1" (click)="removeStage(i)">
+            Delete
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <br><br>
+
+  <button type="submit" class="btn btn-success" [disabled]="!locationForm.valid">Submit</button>
+</form>
+
+<!--hr> for debugging
+
+<p>Form Value: {{ locationForm.value | json }}</p>
+
+<p>Form Status: {{ locationForm.status }}</p>
+
+<p>Stage Plans: {{ stagePlans.length }}</p-->

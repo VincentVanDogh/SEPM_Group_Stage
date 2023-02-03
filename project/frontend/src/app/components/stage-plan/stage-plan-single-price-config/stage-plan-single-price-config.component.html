@@ -1,0 +1,108 @@
+
+<h1 class="display-1">Stage Plan of stage {{stagePlan?.name}}</h1>
+
+<div class="container">
+  <div class="row">
+    <div class="col-auto">
+      <div class="stage-plan-and-legend">
+        <div class="seating-plan no-click">
+          <div class="container">
+            <div class="row">
+              <div class="col-auto">
+                <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+                  <div *ngIf="sector">
+                    <div *ngIf="sector.standing && isSectorOrientationEast(sector)">
+                      <div class="btn btn-outline-primary">
+                        Standing {{i}}, {{getSectorOrientation(sector)}}: {{sector.numSeats}} tickets
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationEast(sector)">
+                      <button class="btn btn-outline-danger">
+                        Sector {{i}}, {{getSectorOrientation(sector)}}: {{sector.numSeats}} tickets
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+                  <div *ngIf="sector">
+                    <div *ngIf="sector.standing && isSectorOrientationSouth(sector)">
+                      <div class="btn btn-outline-primary">
+                        Standing {{i}}, {{getSectorOrientation(sector)}}: {{sector.numSeats}} tickets
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationSouth(sector)">
+                      <button class="btn btn-outline-danger">
+                        Sector {{i}}, {{getSectorOrientation(sector)}}: {{sector.numSeats}} tickets
+                      </button>
+                    </div>
+                    <div *ngIf="sector.standing && isSectorOrientationNorth(sector)">
+                      <div class="btn btn-outline-primary">
+                        Standing {{i}}, {{getSectorOrientation(sector)}}: {{sector.numSeats}} tickets
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationNorth(sector)">
+                      <button class="btn btn-outline-danger">
+                        Sector {{i}}, {{getSectorOrientation(sector)}}: {{sector.numSeats}} tickets
+                      </button>
+                    </div>
+                  </div>
+                  <div *ngIf="!sector">
+                    <span *ngIf="i===24; else noSector"> <div class="stage">Stage</div> </span>
+                    <ng-template #noSector></ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+                  <div *ngIf="sector">
+                    <div *ngIf="sector.standing && isSectorOrientationWest(sector)">
+                      <div class="btn btn-outline-primary">
+                        Standing {{i}}, {{getSectorOrientation(sector)}}: {{sector.numSeats}} tickets
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationWest(sector)">
+                      <button class="btn btn-outline-danger">
+                        Sector {{i}}, {{getSectorOrientation(sector)}}: {{sector.numSeats}} tickets
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="card shadow">
+        <div class="card-header">
+          <h3 class="mb-0">Edit Prices</h3>
+        </div>
+
+        <div class="card-body">
+          <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+            <div *ngIf="sector">
+              <label for="price" class="col-form-label">
+                Price per Ticket for Sector {{i}} (€)
+              </label>
+              <input type="number"
+                     min="0"
+                     oninput="validity.valid||(value='')"
+                     id="price"
+                     name="price"
+                     class="form-control"
+                     [(ngModel)]="prices[i]"
+                     required
+              >
+            </div>
+          </div>
+          <button class="btn btn-success" (click)="savePrices()">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

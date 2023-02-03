@@ -1,0 +1,102 @@
+<div class="pt-5" *ngIf="isAdmin()">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <span class="anchor" id="formLogin"></span>
+
+      <div class="card shadow">
+        <div class="card-header">
+          <h3 class="mb-0">Create new user</h3>
+        </div>
+
+        <div class="card-body">
+          <form class="form" [formGroup]="userForm" (ngSubmit)="createUser()">
+
+            <div class="row">
+              <div class="col">
+                <label for="inputFirstName">First Name</label>
+                <input type="text" name="firstName" formControlName="firstName" class="form-control" id="inputFirstName"
+                       aria-describedby="firstNameHelp" placeholder="Enter first name">
+                <div *ngIf="submitted && userForm.controls.firstName.errors" class="error">
+                  <small class="form-text text-warning" *ngIf="userForm.controls.firstName.errors.required">User first name is
+                    required!
+                  </small>
+                </div>
+              </div>
+
+              <div class="col">
+                <label for="inputLastName">Last Name</label>
+                <input type="text" name="lastName" formControlName="lastName" class="form-control" id="inputLastName"
+                       aria-describedby="lastNameHelp" placeholder="Enter Last Name">
+                <div *ngIf="submitted && userForm.controls.lastName.errors" class="error">
+                  <small class="form-text text-warning" *ngIf="userForm.controls.lastName.errors.required">User last name is
+                    required!
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-10">
+                <label for="inputUsername">Email</label>
+                <input type="text" name="username" formControlName="username" class="form-control" id="inputUsername"
+                       aria-describedby="usernameHelp" placeholder="Enter email">
+                <div *ngIf="submitted && userForm.controls.username.errors" class="error">
+                  <small class="form-text text-warning" *ngIf="userForm.controls.username.errors.required">User email is
+                    required!
+                  </small>
+                </div>
+              </div>
+              <div class="col">
+                <label for="admin">
+                  Admin
+                </label>
+                <input type="checkbox" name="admin" id="admin">
+                <style>
+                  input[name="admin"] {
+                    position: relative;
+                    top: 1.8em;
+                    right: 1.8em;
+                  }
+                </style>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" name="password" formControlName="password" class="form-control" id="password"
+                     placeholder="Password">
+              <div *ngIf="submitted && userForm.controls.password.errors" class="error">
+                <small class="form-text text-warning" *ngIf="userForm.controls.password.errors.required">User password
+                  is
+                  required!
+                </small>
+                <small class="form-text text-warning" *ngIf="userForm.controls.password.errors.minlength">User password
+                  must be at least 8 characters long!
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmation">Confirm Password</label>
+              <input type="password" name="confirmation" formControlName="confirmation" class="form-control" id="confirmation"
+                     placeholder="Confirm Password">
+              <div *ngIf="submitted && userForm.controls.confirmation.errors" class="error">
+                <small class="form-text text-warning" *ngIf="userForm.controls.confirmation.errors.required">Please
+                  confirm your password!
+                </small>
+                <small class="form-text text-warning" *ngIf="userForm.controls.confirmation.errors.minlength">Your password
+                  must be at least 8 characters long!
+                </small>
+              </div>
+            </div>
+            <button type="submit" (click)="createUser()" class="btn btn-success float-right">Create</button>
+
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+

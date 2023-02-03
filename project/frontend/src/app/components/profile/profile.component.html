@@ -1,0 +1,115 @@
+<div class="pt-5 padding-bottom-3">
+  <div class="row padding-bottom-2">
+    <div class="col-md-6 mx-auto">
+      <div class="card shadow">
+        <div class="card-header">
+          <h3 class="mb-0">Profile</h3>
+        </div>
+
+        <div class="card-body">
+          <div class="row">
+            <!-- Start first and last name row -->
+            <div class="mb-2 col-lg-6">
+              <div class="row" id="firstName">
+                <label for="firstName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+                  First Name
+                </label>
+                <div class="col-md-10 col-lg-8">
+                  <div class="form-control-plaintext" type="text">
+                    {{getFirstName()}}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="mb-2 col-lg-6">
+              <div class="row" id="lastName">
+                <label for="lastName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+                  Last Name
+                </label>
+                <div class="col-md-10 col-lg-8">
+                  <div class="form-control-plaintext" type="text">
+                    {{getLastName()}}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <!-- End first and last name row -->
+          </div>
+          <div class="row">
+            <!-- Start Email row -->
+            <div class="mb-2 col-lg-6">
+              <div class="row" id ="email">
+                <label for="email" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+                  Email
+                </label>
+                <div class="col-md-10 col-lg-8">
+                  <div class="form-control-plaintext" type="text">
+                    {{getEmail()}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mb-2 col-lg-6">
+              <div class="row" id ="points">
+                <label for="points" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+                  Points
+                </label>
+                <div class="col-md-10 col-lg-8">
+                  <div class="form-control-plaintext" type="text">
+                    {{this.bonusPointBalance}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End Email row -->
+          </div>
+          <div class="flex space-between">
+            <a class="btn btn-sm btn-outline-primary"  routerLink="/edit" routerLinkActive="active">
+              <i class="bi bi-pencil"></i>
+              Edit Profile
+            </a>
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="this.openModal(profileDeleteWindow);"
+            >
+              <i class="bi-trash"></i>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-orders></app-orders>
+
+  <app-reservations></app-reservations>
+
+</div>
+
+<ng-template #profileDeleteWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete">Are you sure you want to delete your profile permanently?</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="delete()">
+        Yes, delete Profile
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>

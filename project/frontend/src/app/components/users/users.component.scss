@@ -1,0 +1,107 @@
+@use "sass:map";
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins";
+
+.min-width {
+  /* Used to get the actions column in the table to be not wider than necessary */
+  width: 0;
+}
+
+.center-td > td {
+  vertical-align: middle;
+}
+
+.responsive-info-button, .responsive-warning-button, .responsive-danger-button, .responsive-dark-button, .responsive-tree-button {
+  @include button-variant($light, $light);
+}
+
+@each $color in (info, warning, danger) {
+  $value: map.get($theme-colors, $color);
+  tr:hover .responsive-#{$color}-button {
+    @include button-variant($value, $value);
+  }
+}
+
+#searchButton{
+  margin-top: 2.4em;
+  margin-left: 0.2em;
+}
+#createUserButton{
+  margin-top: 2.4em;
+  margin-left: 0.2em;
+}
+
+#reloadButton{
+  margin-top: 2.4em;
+  margin-left: 0.2em;
+}
+
+#loadMoreUsers{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1em;
+  width: 98%;
+}
+
+#goToTop{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1em;
+  width: 98%;
+}
+
+.pagination {
+  padding: 3em;
+}
+
+.page-link-direct {
+  background: #021f54;
+  color: white;
+  width: 2.5em;
+  height: 2.5em;
+}
+
+.page-link-next-prev {
+  background: #021f54;
+  color: white;
+  height: 2.5em;
+}
+
+.page-link-next-prev-grey {
+  background: dimgray;
+  color: white;
+  height: 2.5em;
+  pointer-events: none;
+}
+
+.page-link-current {
+  color: #021f54;
+  background: white;
+  outline-style: solid;
+  outline-color: #021F54;
+  width: 2.5em;
+  height: 2.5em;
+  pointer-events: none;
+}
+
+.btn-primary {
+  background: #021f54;
+  color: white;
+  border: #021F54;
+}
+
+#header {
+  background: #021f54;
+  color: white;
+  margin-top: 4em;
+  margin-bottom: 1em;
+}
+.no-matches {
+  text-align: center;
+  font-size: 29px;
+  font-weight: bold;
+  margin: 2rem;
+}

@@ -1,0 +1,166 @@
+<div class="card shadow" id="header">
+  <div class="card-header">
+    <h1 class="card-title">Current News</h1>
+  </div>
+</div>
+<div>
+
+  <div>
+
+    <ng-template #messageAddModal let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title">News</h5>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="addMessage(messageForm)" #messageForm="ngForm">
+
+          <div class="form-group">
+            <label for="inputTitle">Title</label>
+            <input type="text" name="title" class="form-control" id="inputTitle" required
+                   aria-describedby="titleHelp" placeholder="Enter title" [(ngModel)]="currentMessage.title" [readOnly]="currentMessage.id">
+            <div *ngIf="submitted && messageForm.controls.title.errors" class="error">
+              <small class="form-text text-warning" *ngIf="messageForm.controls.title.errors.required">Title
+                is
+                required!
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputSummary">Summary</label>
+            <textarea rows="3" name="summary" class="form-control" id="inputSummary" required
+                      aria-describedby="summaryHelp" placeholder="Enter summary" [(ngModel)]="currentMessage.summary" [readOnly]="currentMessage.id"></textarea>
+            <div *ngIf="submitted && messageForm.controls.summary.errors" class="error">
+              <small class="form-text text-warning" *ngIf="messageForm.controls.summary.errors.required">
+                Summary is
+                required!
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputText">Text</label>
+            <textarea rows="6" name="text" class="form-control" id="inputText" required
+                      aria-describedby="textHelp" placeholder="Enter text" [(ngModel)]="currentMessage.text" [readOnly]="currentMessage.id"></textarea>
+            <div *ngIf="submitted && messageForm.controls.text.errors" class="error">
+              <small class="form-text text-warning" *ngIf="messageForm.controls.text.errors.required">Text is
+                required!
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="image">Image link</label>
+            <textarea rows="2" name="image" class="form-control" id="image"
+                      aria-describedby="imageHelp" placeholder="Enter image link" [(ngModel)]="currentMessage.image" [readOnly]="currentMessage.id"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="close-modal-btn" (click)="modal.dismiss('close')">Cancel</button>
+        <button type="button" [disabled]="!messageForm.valid" (click)="addMessage(messageForm); modal.dismiss('close')" id="add-msg" class="btn btn-success float-right" *ngIf="!currentMessage.id">Add news</button>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="col-auto">
+
+    <div class="row">
+      <button *ngIf="isAdmin()" id="addNews" type="button" class="btn btn-success bi-plus btn-sm mr-4" (click)="openAddModal(messageAddModal)">Add news</button>
+    </div>
+
+    <button *ngIf="authService.isLoggedIn() && !displayAll" (click)="showAllNews(true)"
+            type="button" class="btn btn-primary" id="allNewsButton">
+      Show all news
+    </button>
+    <button *ngIf="authService.isLoggedIn() && displayAll" (click)="showAllNews(false)"
+            type="button" class="btn btn-secondary" id="unreadNewsButton">
+      Hide read news
+    </button>
+
+    <div class="row" *ngFor="let message of getMessage(); index as i">
+
+      <div *ngIf="isNotRead(message) && i < noOfMessageToLoad" class="card shadow">
+
+        <div class="card-body">
+          <h5 class="card-title">{{message.title}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{getStart(message.publishedAt)}}</h6>
+          <p class="card-text">{{message.summary}}</p>
+          <button (click)="showDetails(message.id)" type="button" class="btn btn-primary">
+            Details
+          </button>
+          <button *ngIf="authService.isLoggedIn()" (click)="markNewsAsRead(message.id)" type="button" class="btn btn-outline-secondary">
+            Mark as read
+          </button>
+          <button id="deleteInit" *ngIf="isAdmin()" (click)="this.openModal(messageDeleteWindow, message.id);" type="button" class="btn btn-danger">
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="!isNotRead(message) && i < noOfMessageToLoad" class="card shadow" id="read">
+
+        <div class="card-body">
+          <h5 class="card-title">{{message.title}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{message.publishedAt | date}}</h6>
+          <p class="card-text">{{message.summary}}</p>
+          <button (click)="showDetails(message.id)" type="button" class="btn btn-primary">
+            Details
+          </button>
+          <button *ngIf="authService.isLoggedIn()" (click)="markNewsAsUnread(message.id)" type="button" class="btn btn-secondary">
+            Mark as unread
+          </button>
+          <button id="deleteInit2" *ngIf="isAdmin()" (click)="this.openModal(messageDeleteWindow, message.id)" type="button" class="btn btn-danger">
+            Delete
+          </button>
+        </div>
+      </div>
+
+    </div>
+    <button
+      *ngIf="noOfMessageToLoad<=getMessage()?.length"
+      class="btn btn-primary mr-1"
+      type="button"
+      id="loadMoreMessages"
+      (click)="loadMoreMessages()"
+    >
+      Load More News
+    </button>
+    <button
+      *ngIf="3<getMessage()?.length"
+      class="btn btn-secondary"
+      type="button"
+      id="goToTop"
+      (click)="goToTop()"
+    >
+      Go To Top
+    </button>
+
+  </div>
+
+</div>
+
+<ng-template #messageDeleteWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete">Are you sure you want to delete this news permanently?</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="deleteMessage(this.deleteId)">
+        Yes, delete news
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+

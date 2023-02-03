@@ -1,0 +1,158 @@
+<div>
+  <div class="card shadow" id="header">
+    <div class="card-header">
+      <h1 class="card-title">Merchandise</h1>
+    </div>
+  </div>
+  <div class="filter-sort-header">
+    <span class="merch-article-arr-len">Showing {{merchArticles === undefined || merchArticles === null ? 0 : merchArticles.length}} merch articles</span>
+    <span class="filter">
+      <span (click)="clearFilters()">Clear filters</span>
+      <span *ngIf="!hidden" (click)="hidden = true">Hide filters</span>
+      <span *ngIf="hidden" (click)="hidden = false">Show filters</span>
+      <span *ngIf="hidden" (click)="hidden = false">
+        <i class="bi bi-funnel"></i>
+      </span>
+      <span *ngIf="!hidden" (click)="hidden = true">
+        <i class="bi bi-funnel-fill"></i>
+      </span>
+    </span>
+  </div>
+  <div *ngIf="!hidden">
+    <div class="d-flex flex-row w-auto mb-3" *ngIf="!hidden">
+      <button type="submit" hidden="true">submit</button>
+      <div class="ms-1">
+        <label for="search" class="col-form-label">
+          Search
+        </label>
+        <input type="text"
+               name="search"
+               class="form-control"
+               id="search"
+               placeholder="Article, Artist, Event, ..."
+               [(ngModel)]="merchArticlesSearch.term"
+               (keyup.enter)="startSearch()">
+      </div>
+      <div class="ms-1">
+        <label for="min-price" class="col-form-label">
+          Min price (€)
+        </label>
+        <input type="number"
+               step=".01"
+               class="form-control number-input"
+               id="min-price"
+               [(ngModel)]="merchArticlesSearch.minPrice"
+               (keyup.enter)="startSearch()">
+
+      </div>
+      <div class = "ms-1">
+        <label for="max-price" class ="col-form-label">
+          Max price (€)
+        </label>
+        <input type="number"
+               step=".01"
+               class="form-control number-input"
+               id="max-price"
+               [(ngModel)]="merchArticlesSearch.maxPrice"
+               (keyup.enter)="startSearch()">
+      </div>
+      <div class = "ms-1">
+        <label for="min-bonus-point-price" class ="col-form-label">
+          Min Bonus Price
+        </label>
+        <input type="number"
+               class="form-control number-input"
+               id="min-bonus-point-price"
+               [(ngModel)]="merchArticlesSearch.minPointPrice"
+               (keyup.enter)="startSearch()">
+      </div>
+      <div class = "ms-1">
+        <label for="max-bonus-point-price" class ="col-form-label">
+          Max Bonus Price
+        </label>
+        <input type="number"
+               class="form-control number-input"
+               id="max-bonus-point-price"
+               [(ngModel)]="merchArticlesSearch.maxPointPrice"
+               (keyup.enter)="startSearch()">
+      </div>
+      <div class = "ms-1">
+        <label for="purchase-option" class ="col-form-label">
+          Purchase Option
+        </label>
+        <select class="form-select"
+                id="purchase-option"
+                [(ngModel)]="merchArticlesSearch.pointPurchaseAvailable">
+          <option value="{{false}}">Money</option>
+          <option value="{{true}}">Money and points</option>
+        </select>
+      </div>
+      <div class = "my-last">
+        <label for="sort-by" class ="col-form-label">
+          Sort by
+        </label>
+        <select class="form-select"
+                id="sort-by"
+                [(ngModel)]="merchArticlesSearch.sortBy">
+          <option ngValue="{{null}}"></option>
+          <option ngValue="PRICE_ASC">Price ascending</option>
+          <option ngValue="PRICE_DESC">Price descending</option>
+          <option ngValue="POINTS_ASC">Points price ascending</option>
+          <option ngValue="POINTS_DESC">Points price descending</option>
+        </select>
+      </div>
+      <div>
+      </div>
+    </div>
+    <div class="center">
+      <button class="btn btn-primary mr-1"
+              (click)="startSearch()">
+        Search
+      </button>
+    </div>
+  </div>
+</div>
+<ul class="pagination justify-content-center" *ngIf="merchArticles.length > 0">
+  <li *ngIf="currentPageId!==1" class="page-item"><button class="page-link page-link-next-prev" (click)="showPrevPage()">Previous</button></li>
+  <li *ngIf="currentPageId===1" class="page-item"><button class="page-link page-link-next-prev-grey">Previous</button></li>
+  <div *ngFor="let number of pageNumbers; index as i">
+    <li *ngIf="showNumberPagination(i+1)" class="page-item"><button class="page-link page-link-direct" (click)="showPage(i+1)">{{i+1}}</button></li>
+    <li *ngIf="showDotsPagination(i+1)" class="page-item"><button class="page-link page-link-direct">...</button></li>
+    <li *ngIf="currentPageId === i+1" class="page-item current"><button class="page-link page-link-current" (click)="showPage(i+1)">{{i+1}}</button></li>
+  </div>
+  <li *ngIf="currentPageId!==pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev" (click)="showNextPage()">Next</button></li>
+  <li *ngIf="currentPageId===pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev-grey">Next</button></li>
+</ul>
+<div class="merch-overview" *ngIf="merchArticles.length > 0">
+  <div *ngFor="let article of merchArticles" class="box" routerLink="/merchandise/{{article.id}}">
+    <img src="{{article.image}}" alt="{{article.name}} image">
+    <!--
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Eo_circle_green_checkmark.svg" class="in-cart">
+    -->
+    <div class="merch-info">
+      <h4>{{article.artistOrEventName}} {{article.name}}</h4>
+      <span class="prices">
+        <h5>€ {{(article.price / 100).toFixed(2)}}</h5>
+        <h5 *ngIf="article.bonusPointPrice !== null">{{article.bonusPointPrice}} Points</h5>
+      </span>
+      <div class="cart">
+        <a href="#"><i class='bx bx-cart' ></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="merchArticles.length === 0" class="no-matches">
+  No merch articles found matching your queries
+</div>
+
+<ul class="pagination justify-content-center" *ngIf="merchArticles.length > 0">
+  <li *ngIf="currentPageId!==1" class="page-item"><button class="page-link page-link-next-prev" (click)="showPrevPage()">Previous</button></li>
+  <li *ngIf="currentPageId===1" class="page-item"><button class="page-link page-link-next-prev-grey">Previous</button></li>
+  <div *ngFor="let number of pageNumbers; index as i">
+    <li *ngIf="showNumberPagination(i+1)" class="page-item"><button class="page-link page-link-direct" (click)="showPage(i+1)">{{i+1}}</button></li>
+    <li *ngIf="showDotsPagination(i+1)" class="page-item"><button class="page-link page-link-direct">...</button></li>
+    <li *ngIf="currentPageId === i+1" class="page-item current"><button class="page-link page-link-current" (click)="showPage(i+1)">{{i+1}}</button></li>
+  </div>
+  <li *ngIf="currentPageId!==pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev" (click)="showNextPage()">Next</button></li>
+  <li *ngIf="currentPageId===pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev-grey">Next</button></li>
+</ul>

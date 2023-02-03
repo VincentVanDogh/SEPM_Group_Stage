@@ -1,0 +1,61 @@
+<div class="card shadow" id="header">
+  <div class="card-header">
+    <h1 class="card-title">Top 10 Events</h1>
+  </div>
+</div>
+
+<br>
+
+<div class="d-flex flex-row w-auto mb-3">
+
+  <div class="flex-grow-1" id="categoryColumn">
+    <label for="category" class="col-form-label">Category</label>
+    <select id="category" class="form-select" [(ngModel)]="category" (ngModelChange)="redrawChart()">
+      <ng-container *ngFor="let category of eventType | keyvalue; index as i">
+        <option [ngValue]="category.value">{{category.value | titlecase }}</option>
+      </ng-container>
+    </select>
+  </div>
+
+  <div class="flex-grow-1" id="monthColumn">
+    <label for="month" class="col-form-label">Month</label>
+    <select id="month" class="form-select" [(ngModel)]="month" (ngModelChange)="redrawChart()">
+      <option value="1">Jan</option>
+      <option value="2">Feb</option>
+      <option value="3">Mar</option>
+      <option value="4">Apr</option>
+      <option value="5">Mai</option>
+      <option value="6">Jun</option>
+      <option value="7">Jul</option>
+      <option value="8">Aug</option>
+      <option value="9">Sep</option>
+      <option value="10">Oct</option>
+      <option value="11">Nov</option>
+      <option value="12">Dec</option>
+    </select>
+  </div>
+
+  <div class="flex-grow-1" id="yearColumn">
+    <label for="year" class="col-form-label">Year</label>
+    <input id="year" class="form-control" type="number" [(ngModel)]="year" (change)="redrawChart()">
+  </div>
+  <!--p> debugging
+    {{ events.length }}
+  </p-->
+</div>
+
+<br>
+
+<div class="chart-container" *ngIf="events.length < 1">
+  No {{category | titlecase}} sales yet in selected month
+</div>
+<div class="chart-container">
+  <canvas id="top10"> {{ chart }} </canvas>
+</div>
+
+<!--br> for debugging
+
+<p> number of events: {{ events.length }} </p>
+<p>category: {{category}}</p>
+<p>month: {{month}}</p>
+<p>year: {{year}}</p-->

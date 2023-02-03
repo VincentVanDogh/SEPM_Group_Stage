@@ -1,0 +1,77 @@
+<div class="article">
+  <img src="{{merchArticle.image}}" alt="getArticleName()">
+  <div class="merch-info">
+    <div class="title-price">
+      <h4>{{getArticleName()}}</h4>
+      <h5>€ {{(merchArticle.price / 100).toFixed(2)}} / {{merchArticle.bonusPointPrice}} Points</h5>
+    </div>
+    <div *ngIf="!isAdmin()">
+      <h5>Select payment option</h5>
+      <div *ngIf="!isAdmin()" class="input-radios">
+        <div class="input-radio">
+          <span>
+            <input type="radio"
+                   id="money"
+                   name="purchase-option"
+                   value="money"
+                   [checked] = "!merchArticle.bonusUsed || merchArticle.bonusUsed === null || merchArticle.bonusUsed === undefined"
+                   (change)="merchArticle.bonusUsed = !merchArticle.bonusUsed">
+            <label for="money">Purchase with money</label>
+          </span>
+          <span>€ {{(quantity * merchArticle.price / 100).toFixed(2)}}</span>
+        </div>
+        <div class="input-radio" *ngIf="merchArticle.bonusPointPrice !== null">
+          <span>
+            <input type="radio"
+                   id="points"
+                   name="purchase-option"
+                   value="points"
+                   [checked]="merchArticle.bonusUsed"
+                   (change)="merchArticle.bonusUsed = !merchArticle.bonusUsed"
+                   [disabled]="this.bonusPointBalance < merchArticle.bonusPointPrice * quantity">
+            <label for="points" [ngClass]="this.bonusPointBalance < merchArticle.bonusPointPrice * quantity ? 'disabled' : ''">
+              Purchase with points
+            </label>
+          </span>
+          <span [ngClass]="this.bonusPointBalance < merchArticle.bonusPointPrice * quantity ? 'disabled' : ''">
+            {{quantity * merchArticle.bonusPointPrice}} Points
+          </span>
+          <span *ngIf="this.bonusPointBalance < merchArticle.bonusPointPrice * quantity" class="missing-points">
+            Missing {{merchArticle.bonusPointPrice * quantity - this.bonusPointBalance}} Points
+          </span>
+        </div>
+      </div>
+
+      <div class="quantity">
+        <h5>Select Quantity</h5>
+        <select [(ngModel)]="quantity" (click)="checkInputRadio()">
+          <option *ngFor="let amount of quantityArr">{{amount}}</option>
+        </select>
+      </div>
+      <h5>Price: {{computePrice()}}</h5>
+      <div class="options">
+        <button type="button" class="btn btn-success cart-btn" (click)="addToCart()" routerLink="/shopping-cart"
+                *ngIf="merchArticle.articleCount === 0">
+          <span>Add to Cart</span>
+          <i class="bi bi-cart-plus-fill"></i>
+        </button>
+        <!-- If merchArticle.articleCount == quantity has ===, then the buttons do not switch based on the condition -->
+        <button type="button" class="btn btn-dark cart-btn" routerLink="/shopping-cart"
+                *ngIf="merchArticle.articleCount > 0 && merchArticle.articleCount === quantity && bonusUsedDefault === merchArticle.bonusUsed">
+          <span>Move to the shopping cart</span>
+          <i class="bi bi-cart"></i>
+        </button>
+        <button type="button" class="btn btn-primary cart-btn" (click)="addToCart()" routerLink="/shopping-cart"
+                *ngIf="merchArticle.articleCount !== null && merchArticle.articleCount > 0 && merchArticle.articleCount !== quantity || bonusUsedDefault !== merchArticle.bonusUsed">
+          <span>Save changes</span>
+          <i class="bi bi-cart-plus-fill"></i>
+        </button>
+        <button type="button" class="btn btn-danger cart-btn" (click)="deleteMerch(merchArticle.articleNr)" routerLink="/shopping-cart"
+                *ngIf="merchArticle.articleCount > 0">
+          <span>Remove from the shopping cart</span>
+          <i class="bi bi-cart-x-fill"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,361 @@
+
+<h4>Processed Orders</h4>
+<div class="mt-3 shadow">
+  <div class="ticket-acquisition header">
+    <div></div>
+    <div>Reference No.</div>
+    <div>Total Price Paid</div>
+    <div>Purchase Date</div>
+    <div>Contains Reservations</div>
+    <div>Purchases</div>
+    <div>Actions</div>
+  </div>
+  <div>
+    <div *ngFor="let order of orders">
+      <div class="ticket-acquisition hover">
+        <div>
+          <button [ngClass]="order.expanded ? 'btn btn-sm bi-chevron-down' : 'btn btn-sm bi-chevron-right'"
+                  (click)="order.expanded = !order.expanded">
+          </button>
+        </div>
+        <div>{{getInvoiceReferenceNo(order)}}</div>
+        <div>€ {{orderTotalPrice(order)}}</div>
+        <div>{{getStart(order.orderDate, false)}}</div>
+        <div>{{countReservations(order) > 0 ? 'Yes' : 'No'}}</div>
+        <div>{{countPurchases(order)}}</div>
+        <div class="action-buttons-cell">
+          <a class="btn btn-sm responsive-danger-button invoice-btn"
+             aria-label="Buy tickets"
+             *ngIf="cancelOrderAvailable(order) && countReservations(order) > 0"
+             (click)="openDeleteTicketAcquisition(acquisitionBuyReservationsWindow, order.ticketAcquisition)">
+            <i class="bi bi-currency-dollar">Buy</i>
+          </a>
+          <a class="btn btn-sm responsive-info-button invoice-btn"
+             aria-label="Download invoice"
+             (click)="downloadInvoice(order.invoiceId)">
+            <i class="bi bi-download">Invoice</i>
+          </a>
+          <a class="btn btn-sm responsive-danger-button invoice-btn"
+             aria-label="Delete tickets"
+             *ngIf="cancelOrderAvailable(order)"
+             (click)="openDeleteTicketAcquisition(acquisitionDeleteWindow, order.ticketAcquisition)">
+            <i class="bi bi-trash">Cancel</i>
+          </a>
+        </div>
+      </div>
+      <ng-container *ngIf="order.expanded">
+        <ng-container *ngIf="order.ticketAcquisition">
+          <div class="ticket-details-list {{getBackgroundColorString(ticket)}}" *ngFor="let ticket of order.ticketAcquisition.tickets">
+            <div class="ticket-details">
+              <div class="entry">
+                <div class="bold font-theme">Event:</div>
+                <div>{{ticket.act.event.name}}</div>
+              </div>
+              <div class="entry">
+                <div class="bold font-theme">Start time:</div>
+                <div>{{getStart(ticket.act.start, true)}}</div>
+              </div>
+              <div class="entry">
+                <div class="bold font-theme">Status:</div>
+                <div>{{getStatus(ticket)}}</div>
+              </div>
+              <div class="entry">
+                <div class="bold font-theme">Venue:</div>
+                <div>{{ticket.act.event.location.venueName}}</div>
+              </div>
+              <div class="entry">
+                <div class="bold font-theme">Street:</div>
+                <div>{{ticket.act.event.location.address.street}}</div>
+              </div>
+              <div></div>
+              <div class="seat-info">
+                <div class="seat-block" *ngIf="ticket.seatNo === 0">
+                  <div class="bold font-theme">Sector:&nbsp;</div>
+                  <div class="seat-value">{{ticket.sectorDesignation}}</div>
+                </div>
+                <div class="seat-block" *ngIf="ticket.seatNo !== 0">
+                  <div class="bold font-theme">Row:&nbsp;</div>
+                  <div class="seat-value">{{ticket.rowNumber}}</div>
+                </div>
+                <div class="seat-block">
+                  <div class="bold font-theme">Seat:&nbsp;</div>
+                  <div class="seat-value">{{ticket.seatNo === 0 ? 'Standing' : ticket.seatNoInRow}}</div>
+                </div>
+              </div>
+              <div class="entry">
+                <div class="bold font-theme">City:</div>
+                {{ticket.act.event.location.address.city}},
+                {{ticket.act.event.location.address.country}}
+              </div>
+              <div class="entry">
+                <div class="bold font-theme">Price:</div>
+                <div>€ {{getTicketPrice(ticket)}}</div>
+              </div>
+            </div>
+            <div class="cancel-button-cell">
+              <a class="btn btn-sm responsive-danger-button"
+                 aria-label="Buy ticket"
+                 *ngIf="!ticket.cancelled && ticketIsReservation(ticket) && !hasActHappend(ticket)"
+                 (click)="openDeleteTicket(buyReservationWindow, ticket, order.ticketAcquisition)">
+                <i class="bi bi-currency-dollar">Buy</i>
+              </a>
+              <a class="btn btn-sm responsive-danger-button"
+                 aria-label="Delete ticket"
+                 *ngIf="!ticket.cancelled && !hasActHappend(ticket)"
+                 (click)="openDeleteTicket(ticketDeleteWindow, ticket, order.ticketAcquisition)">
+                <i class="bi bi-trash">Cancel</i>
+              </a>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="order.merchPurchase">
+          <div>
+            <div>
+              <div class="merch-purchase header">
+                <div></div>
+                <div>Article Number</div>
+                <div>Item</div>
+                <div>Quantity</div>
+                <div>Payment Type</div>
+                <div>Price</div>
+              </div>
+              <div class="merch-purchase" *ngFor="let article of order.merchPurchase.articles">
+                <div></div>
+                <div>{{article.articleNr}}</div>
+                <div>
+                  <div>{{getName(article)}}</div>
+                  <div class="img-div">
+                    <img src="{{article.image}}" alt="{{getName(article)}}" routerLink="/merchandise/{{article.articleNr}}">
+                  </div>
+                </div>
+                <div>{{article.articleCount}}</div>
+                <div>Bought with: {{article.bonusUsed ? 'Points' : 'Money'}}</div>
+                <div>€ {{getArticlePrice(article)}}</div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="order.cancellations && order.cancellations.length > 0">
+          <div>
+            <div>
+              <div class="cancellation red-header">
+                <div></div>
+                <div>Reference No.</div>
+                <div>Total Price Paid</div>
+                <div>Cancellation Date</div>
+                <div></div>
+                <div>Items purchased</div>
+                <div>Actions</div>
+              </div>
+              <div *ngFor="let cancellation of order.cancellations">
+                <div class="cancellation hover">
+                  <div>
+                    <button [ngClass]="cancellation.expanded ? 'btn btn-sm bi-chevron-down' : 'btn btn-sm bi-chevron-right'"
+                            (click)="cancellation.expanded = !cancellation.expanded">
+                    </button>
+                  </div>
+                  <div>{{getCancellationReferenceNo(cancellation)}}</div>
+                  <div>€ {{cancellationTotalPrice(cancellation)}}</div>
+                  <div>{{getStart(cancellation.cancellationDate, false)}}</div>
+                  <div></div>
+                  <div>{{countCancelledItems(cancellation)}}</div>
+                  <div class="action-buttons-cell">
+                    <a class="btn btn-sm responsive-info-button invoice-btn"
+                       aria-label="Download Cancellation"
+                       (click)="downloadCancellation(cancellation.cancellationId)">
+                      <i class="bi bi-download">Cancellation</i>
+                    </a>
+                  </div>
+                </div>
+                <ng-container *ngIf="cancellation.expanded">
+                  <div class="ticket-details-list {{ticket.cancelled ? 'light-red-bg' : 'light-blue-bg'}}" *ngFor="let ticket of cancellation.ticketAcquisition.tickets">
+                    <div class="ticket-details">
+                      <div class="entry">
+                        <div class="bold font-theme">Event:</div>
+                        <div>{{ticket.act.event.name}}</div>
+                      </div>
+                      <div class="entry">
+                        <div class="bold font-theme">Start time:</div>
+                        <div>{{getStart(ticket.act.start, true)}}</div>
+                      </div>
+                      <div class="entry">
+                        <div class="bold font-theme">Status:</div>
+                        <div>{{getStatus(ticket)}}</div>
+                      </div>
+                      <div class="entry">
+                        <div class="bold font-theme">Venue:</div>
+                        <div>{{ticket.act.event.location.venueName}}</div>
+                      </div>
+                      <div class="entry">
+                        <div class="bold font-theme">Street:</div>
+                        <div>{{ticket.act.event.location.address.street}}</div>
+                      </div>
+                      <div></div>
+                      <div class="seat-info">
+                        <div class="seat-block" *ngIf="ticket.seatNo === 0">
+                          <div class="bold font-theme">Sector:&nbsp;</div>
+                          <div class="seat-value">{{ticket.sectorDesignation}}</div>
+                        </div>
+                        <div class="seat-block" *ngIf="ticket.seatNo !== 0">
+                          <div class="bold font-theme">Row:&nbsp;</div>
+                          <div class="seat-value">{{ticket.rowNumber}}</div>
+                        </div>
+                        <div class="seat-block">
+                          <div class="bold font-theme">Seat:&nbsp;</div>
+                          <div class="seat-value">{{ticket.seatNo === 0 ? 'Standing' : ticket.seatNoInRow}}</div>
+                        </div>
+                      </div>
+                      <div class="entry">
+                        <div class="bold font-theme">City:</div>
+                        {{ticket.act.event.location.address.city}},
+                        {{ticket.act.event.location.address.country}}
+                      </div>
+                      <div class="entry">
+                        <div class="bold font-theme">Price:</div>
+                        <div>€ {{getTicketPrice(ticket)}}</div>
+                      </div>
+                    </div>
+                    <div class="cancel-button-cell">
+<!--                      <a class="btn btn-sm responsive-danger-button"-->
+<!--                         aria-label="Buy ticket"-->
+<!--                         *ngIf="!ticket.cancelled && ticketIsReservation(ticket)"-->
+<!--                         (click)="openDeleteTicket(buyReservationWindow, ticket, cancellation.ticketAcquisition)">-->
+<!--                        <i class="bi bi-currency-dollar">Buy</i>-->
+<!--                      </a>-->
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<div *ngIf="pageNumbers.length > 1" id="pagination-display">
+  <ul class="pagination justify-content-center">
+    <li *ngIf="currentPageId!==1" class="page-item"><button class="page-link page-link-next-prev" (click)="showPrevPage()">Previous</button></li>
+    <li *ngIf="currentPageId===1" class="page-item"><button class="page-link page-link-next-prev-grey">Previous</button></li>
+    <div *ngFor="let number of pageNumbers; index as i">
+      <li *ngIf="showNumberPagination(i+1)" class="page-item"><button class="page-link page-link-direct" (click)="showPage(i+1)">{{i+1}}</button></li>
+      <li *ngIf="showDotsPagination(i+1)" class="page-item"><button class="page-link page-link-direct">...</button></li>
+      <li *ngIf="currentPageId === i+1" class="page-item"><button class="page-link page-link-current" (click)="showPage(i+1)">{{i+1}}</button></li>
+    </div>
+    <li *ngIf="currentPageId!==pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev" (click)="showNextPage()">Next</button></li>
+    <li *ngIf="currentPageId===pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev-grey">Next</button></li>
+  </ul>
+</div>
+
+<ng-template #acquisitionDeleteWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete"><b>Are you sure you want to cancel this order and the tickets included?</b><br>
+      Please note that any merchandise bought cannot be cancelled online. To cancel a merchandise purchase, please fill
+      out the return form supplied with your delivery and return within 14 days of purchase. <br>
+      Your statutory rights are not affected.</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="cancelTicketAcquisition(acquisitionDelete)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ticketDeleteWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete">Are you sure you want to cancel this ticket from your order?</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="cancelTicket(ticketDelete, acquisitionDelete)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #acquisitionBuyReservationsWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Purchase</h4>
+    <button type="button"
+            class="close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross-click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete"><b>Are you sure you want to buy the reserved tickets from this order?</b><br>
+      By pressing yes and not completing the purchase, your reservation will be lost!</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="buyTicketAcquisitionReservations(acquisitionDelete.id)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #buyReservationWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Purchase</h4>
+    <button type="button"
+            class="close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross-click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete"><b>Are you sure you want to buy this reserved ticket?</b><br>
+      By pressing yes and not completing the purchase, your reservation will be lost!</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="buyReservedTicket(ticketDelete)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+

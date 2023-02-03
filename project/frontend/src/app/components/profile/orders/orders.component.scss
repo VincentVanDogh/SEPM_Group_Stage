@@ -1,0 +1,175 @@
+@import "src/styles";
+
+.root {
+  padding: 3em 0;
+}
+.ticket-acquisition {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+  border-top: 1px solid #021F54;
+}
+
+.ticket-acquisition {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 3fr 2fr 2fr 3fr;
+}
+
+.merch-purchase {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+  border-top: 1px solid #021F54;
+  margin-left: 64px;
+}
+
+.merch-purchase {
+  display: grid;
+  grid-template-columns: 1fr 3fr 3fr 3fr 3fr 3fr 3fr;
+}
+
+.cancellation {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+  border-top: 1px solid #bb0000;
+  margin-left: 64px;
+}
+
+.cancellation {
+  display: grid;
+  grid-template-columns: 1fr 3fr 3fr 3fr 3fr 3fr 3fr;
+}
+
+.header {
+  font-weight: bold;
+  color: #FFFFFF;
+  background: #021f54;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.red-header {
+  font-weight: bold;
+  color: #FFFFFF;
+  background: #bb0000;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.border-grey {
+  border-bottom: 1px solid #021f54;
+}
+
+.hover:hover {
+  background: #F0F0F0;
+}
+
+.mt-3 {
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.ticket-details-list {
+  padding: 1em;
+  margin-left: 64px;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+  display: flex;
+}
+.ticket-details-list:not(:first-child) {
+  margin-top: 0.25rem;
+}
+.ticket-details-list:not(:last-child) {
+  margin-bottom: 0.25rem;
+}
+
+.ticket-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 5px 3rem;
+}
+
+.seat-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+.space-between-vertical {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.seat-block {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+.seat-value {
+  text-align: center;
+}
+
+.cancel-button-cell {
+  display: flex;
+  justify-content: end;
+  width: 64px;
+}
+.action-buttons-cell {
+  display: flex;
+  justify-content: center;
+}
+img {
+  max-width: 80px;
+  cursor: pointer;
+}
+.img-div {
+  display: flex;
+  justify-content: center;
+  padding: 7px 0;
+}
+
+#pagination-display {
+  padding: 0.5em;
+}
+
+.page-link-direct {
+  background: #021f54;
+  color: white;
+  width: 2.5em;
+  height: 2.5em;
+}
+
+.page-link-next-prev {
+  background: #021f54;
+  color: white;
+  height: 2.5em;
+}
+
+.page-link-next-prev-grey {
+  background: dimgray;
+  color: white;
+  height: 2.5em;
+  pointer-events: none;
+}
+
+.page-link-current {
+  color: #021f54;
+  background: white;
+  outline-style: solid;
+  outline-color: #021F54;
+  width: 2.5em;
+  height: 2.5em;
+  pointer-events: none;
+}
+.invoice-btn {
+  width: 54px;
+}

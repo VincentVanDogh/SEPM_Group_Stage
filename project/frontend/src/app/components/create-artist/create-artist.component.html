@@ -1,0 +1,85 @@
+<h1 class="display-2">Create new Artist</h1>
+
+<br>
+
+<form [formGroup]="artistForm" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="firstName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          First Name:
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="firstName" class="form-control" type="text" formControlName="firstName">
+        </div>
+        <small *ngIf="firstName.hasError('maxlength')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          First Name must not exceed 255 characters
+        </small>
+      </div>
+    </div>
+
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="lastName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Last Name:
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="lastName" class="form-control" type="text" formControlName="lastName">
+        </div>
+        <small *ngIf="lastName.hasError('maxlength')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Last Name must not exceed 255 characters
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="bandName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Band Name:
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="bandName" class="form-control" type="text" formControlName="bandName">
+        </div>
+        <small *ngIf="bandName.hasError('maxlength')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Band Name must not exceed 255 characters
+        </small>
+      </div>
+    </div>
+
+
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="stageName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Stage Name:
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="stageName" class="form-control" type="text" formControlName="stageName">
+        </div>
+        <small *ngIf="stageName.touched && stageName.hasError('required')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Stage Name is required
+        </small>
+        <small *ngIf="stageName.hasError('maxlength')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Stage Name must not exceed 255 characters
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <br><br>
+
+  <button type="submit" class="btn btn-success" [disabled]="!artistForm.valid">Submit</button>
+</form>
+<!--
+<hr> for debugging
+
+<p>Form Value: {{ artistForm.value | json }}</p>
+
+<p>Form Status: {{ artistForm.status }}</p>
+-->

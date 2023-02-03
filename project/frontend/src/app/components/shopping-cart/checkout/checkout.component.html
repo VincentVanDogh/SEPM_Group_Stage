@@ -1,0 +1,230 @@
+<form #form="ngForm" (ngSubmit)="onSubmit()">
+  <h1 class="display-5">Checkout</h1>
+  <div class="row">
+    <!-- Start payment method and card number row -->
+    <div class="mb-2 col-lg-6">
+      <!-- When nesting rows, always make row > col-* > row. The Bootstrap classes do not work right when an element is both col* and row -->
+      <div class="row">
+        <label for="paymentMethod" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Payment Method
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <select name="paymentMethod"
+                  id="paymentMethod"
+                  class="form-select"
+                  [(ngModel)]="card.method"
+                  required>
+            <option value="PAYPAL">PayPal</option>
+            <option value="WEBMONEY">WebMoney</option>
+            <option value="PAYSAFECARD">PaySafeCard</option>
+            <option value="VISA">Visa</option>
+            <option value="MASTERCARD">MasterCard</option>
+            <option value="JCB">JCB</option>
+            <option value="SKRILL">Skrill</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="cardNumber" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Card Number
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <!--
+          Visa, Mastercard and Discover have card numbers that are 16 digits long.
+          American Express credit cards have 15 digits.
+          -->
+          <input type="text"
+                 name="cardNumber"
+                 id="cardNumber"
+                 class="form-control"
+                 [(ngModel)]="card.cardNumber"
+                 mask="0000 0000 0000 0000"
+                 placeholder="XXXX XXXX XXXX XXXX"
+                 required
+          />
+          <div class="invalid-feedback">
+            Card number is required
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End payment method and card number row -->
+  </div>
+
+  <div class="row">
+    <!-- Start expiration date and CVC row -->
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="expirationDate" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Expiration Date
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input type="month"
+                 name="expirationDate"
+                 id="expirationDate"
+                 class="form-control"
+                 placeholder="MM/YYYY"
+                 [(ngModel)]="card.expirationDate"
+                 required
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="cvc" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          CVC
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input type="text"
+                 name="cvc"
+                 id="cvc"
+                 class="form-control"
+                 mask="000"
+                 placeholder="XXX"
+                 [(ngModel)]="card.cvc"
+                 required
+          />
+        </div>
+      </div>
+    </div>
+    <!-- End expiration date and CVC row -->
+  </div>
+
+
+  <h1 class="display-5">Billing Information</h1>
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="firstName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          First Name
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input type="text"
+                 id="firstName"
+                 name="firstName"
+                 class="form-control"
+                 [(ngModel)]="billingInformation.firstName"
+                 required
+          >
+          <div class="invalid-feedback">
+            First Name is required
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="lastName" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Last Name
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input type="text"
+                 id="lastName"
+                 name="lastName"
+                 class="form-control"
+                 [(ngModel)]="billingInformation.lastName"
+                 required
+          >
+          <div class="invalid-feedback">
+            Last Name is required
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="street" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Street
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input type="text"
+                 id="street"
+                 name="street"
+                 class="form-control"
+                 [(ngModel)]="billingInformation.address.street"
+                 required
+          >
+          <div class="invalid-feedback">
+            Street is required
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="postalCode" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Postal code
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input type="text"
+                 id="postalCode"
+                 name="postalCode"
+                 class="form-control"
+                 mask="000099"
+
+                 [(ngModel)]="billingInformation.address.postalCode"
+                 required
+          >
+          <div class="invalid-feedback">
+            Postal code is required
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="city" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          City
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input type="text"
+                 id="city"
+                 name="city"
+                 class="form-control"
+                 [(ngModel)]="billingInformation.address.city"
+                 required
+          >
+          <div class="invalid-feedback">
+            Last Name is required
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="country" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Country
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input type="text"
+                 id="country"
+                 name="country"
+                 class="form-control"
+                 [(ngModel)]="billingInformation.address.country"
+                 required
+          >
+          <div class="invalid-feedback">
+            First Name is required
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 d-flex flex-row">
+    <span class="flex-grow-1"></span>
+    <button class="btn btn-primary" [disabled]="!form.valid" type="submit">
+      Submit
+    </button>
+  </div>
+</form>

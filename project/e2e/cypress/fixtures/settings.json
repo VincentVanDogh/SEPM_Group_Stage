@@ -1,0 +1,9 @@
+{
+  "adminUser": "admin@email.com",
+  "adminPw": "password",
+  "newUserFN": "Max",
+  "newUserLN": "Mustermann",
+  "newUser": "new@email.com",
+  "newUserPw": "12345678",
+  "baseUrl": "localhost:4200"
+}

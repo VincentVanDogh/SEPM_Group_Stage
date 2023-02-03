@@ -1,0 +1,226 @@
+<h4>Reservations</h4>
+
+<button *ngIf="!displayAll" (click)="toggleDisplayModes()"
+        type="button" class="btn btn-primary" id="allReservationsButton">
+  Show expired reservations
+</button>
+<button *ngIf="displayAll" (click)="toggleDisplayModes()"
+        type="button" class="btn btn-secondary" id="currentReservationsButton">
+  Hide expired reservations
+</button>
+
+<div class="mt-3 shadow">
+  <div class="reservation header">
+    <div></div>
+    <div>Reservation Number</div>
+    <div>Total Reserved Value</div>
+    <div></div>
+    <div>Number of Tickets</div>
+    <div></div>
+    <div>Actions</div>
+  </div>
+  <div>
+    <div *ngFor="let reservation of reservations">
+      <div  class="reservation hover">
+        <div>
+          <button [ngClass]="reservation.expanded ? 'btn btn-sm bi-chevron-down' : 'btn btn-sm bi-chevron-right'"
+                  (click)="reservation.expanded = !reservation.expanded">
+          </button>
+        </div>
+        <div>{{reservation.reservationNo}}</div>
+        <div>€ {{acquisitionTotalPrice(reservation)}}</div>
+        <div></div>
+        <div>{{reservation.tickets.length}}</div>
+        <div></div>
+        <div class="cancel-button-cell">
+          <a class="btn btn-sm responsive-danger-button"
+             aria-label="Delete ticket"
+             *ngIf="cancelReservationAvailable(reservation)"
+            (click)="openDeleteTicketAcquisition(acquisitionBuyReservationWindow, reservation)">
+            <i class="bi bi-currency-dollar">Buy</i>
+          </a>
+          <a class="btn btn-sm responsive-danger-button"
+             aria-label="Delete ticket"
+             *ngIf="cancelReservationAvailable(reservation)"
+             (click)="openDeleteTicketAcquisition(acquisitionDeleteWindow, reservation)">
+            <i class="bi bi-trash">Cancel</i>
+          </a>
+        </div>
+      </div>
+      <ng-container *ngIf="reservation.expanded">
+        <div class="ticket-details-list {{ticket.cancelled ? 'light-red-bg' : 'light-blue-bg'}}" *ngFor="let ticket of reservation.tickets">
+          <div class="ticket-details">
+            <div class="entry">
+              <div class="bold font-theme">Event:</div>
+              <div>{{ticket.act.event.name}}</div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Start time:</div>
+              <div>{{getStart(ticket.act.start)}}</div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Status:</div>
+              <div>{{getStatus(ticket)}}</div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Venue:</div>
+              <div>{{ticket.act.event.location.venueName}}</div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Street:</div>
+              <div>{{ticket.act.event.location.address.street}}</div>
+            </div>
+            <div></div>
+            <div class="seat-info">
+              <div class="seat-block" *ngIf="ticket.seatNo === 0">
+                <div class="bold font-theme">Sector:&nbsp;</div>
+                <div class="seat-value">{{ticket.sectorDesignation}}</div>
+              </div>
+              <div class="seat-block" *ngIf="ticket.seatNo !== 0">
+                <div class="bold font-theme">Row:&nbsp;</div>
+                <div class="seat-value">{{ticket.rowNumber}}</div>
+              </div>
+              <div class="seat-block">
+                <div class="bold font-theme">Seat:&nbsp;</div>
+                <div class="seat-value">{{ticket.seatNo === 0 ? 'Standing' : ticket.seatNoInRow}}</div>
+              </div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">City:</div>
+              {{ticket.act.event.location.address.city}},
+              {{ticket.act.event.location.address.country}}
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Price:</div>
+              <div>€ {{getPrice(ticket)}}</div>
+            </div>
+          </div>
+          <div class="cancel-button-cell">
+            <a class="btn btn-sm responsive-danger-button"
+               aria-label="Buy ticket"
+               *ngIf="!ticket.cancelled && !hasActHappend(ticket)"
+               (click)="openDeleteTicket(ticketBuyReservationWindow, ticket, reservation)">
+              <i class="bi bi-currency-dollar">Buy</i>
+            </a>
+            <a class="btn btn-sm responsive-danger-button"
+               aria-label="Delete ticket"
+               *ngIf="!ticket.cancelled && !hasActHappend(ticket)"
+               (click)="openDeleteTicket(ticketDeleteWindow, ticket, reservation)">
+              <i class="bi bi-trash">Cancel</i>
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<div *ngIf="pageNumbers.length > 1" id="pagination-display">
+  <ul class="pagination justify-content-center">
+    <li *ngIf="currentPageId!==1" class="page-item"><button class="page-link page-link-next-prev" (click)="showPrevPage()">Previous</button></li>
+    <li *ngIf="currentPageId===1" class="page-item"><button class="page-link page-link-next-prev-grey">Previous</button></li>
+    <div *ngFor="let number of pageNumbers; index as i">
+      <li *ngIf="showNumberPagination(i+1)" class="page-item"><button class="page-link page-link-direct" (click)="showPage(i+1)">{{i+1}}</button></li>
+      <li *ngIf="showDotsPagination(i+1)" class="page-item"><button class="page-link page-link-direct">...</button></li>
+      <li *ngIf="currentPageId === i+1" class="page-item"><button class="page-link page-link-current" (click)="showPage(i+1)">{{i+1}}</button></li>
+    </div>
+    <li *ngIf="currentPageId!==pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev" (click)="showNextPage()">Next</button></li>
+    <li *ngIf="currentPageId===pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev-grey">Next</button></li>
+  </ul>
+</div>
+
+<ng-template #acquisitionDeleteWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete">Are you sure you want to cancel this order and the tickets included?</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="cancelTicketAcquisition(acquisitionDelete)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ticketDeleteWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete">Are you sure you want to cancel this ticket from your order?</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="cancelTicket(ticketDelete, acquisitionDelete)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ticketBuyReservationWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Purchase of Reservation</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete">Are you sure you want to buy this reserved ticket? By pressing yes and not completing the purchase, your reservation will be lost!</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="buyReservedTicket(ticketDelete)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #acquisitionBuyReservationWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Buying Reservation</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete"><b>Are you sure you want to buy the reserved tickets from this order?</b><br>
+      By pressing yes and not completing the purchase, your reservation will be lost!</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="buyReservedTickets(acquisitionDelete.reservationNo)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,151 @@
+<div *ngIf="isAdmin()">
+  <div class="card shadow" id="header">
+    <div class="card-header">
+      <h1 class="card-title">Users</h1>
+    </div>
+  </div>
+  <form class="d-flex flex-row w-auto mb-3" [formGroup]="searchForm">
+    <div class="flex-grow-1" style="margin-right: 0.2em;">
+      <label for="searchFirstName" class="col-form-label">
+        First Name
+      </label>
+      <input type="text" name="searchFirstName"
+             class="form-control"
+             id="searchFirstName"
+             formControlName="firstName">
+    </div>
+    <div class="flex-grow-1"  style="margin-right: 0.2em;">
+      <label for="searchLastName" class="col-form-label">
+        Last Name
+      </label>
+      <input type="text" name="searchLastName"
+             class="form-control"
+             id="searchLastName"
+             formControlName="lastName">
+    </div>
+    <div class="flex-grow-1">
+      <label for="searchEmail" class="col-form-label">
+        Email
+      </label>
+      <input name="searchEmail"
+             class="form-control"
+             id="searchEmail"
+             formControlName="email">
+    </div>
+    <div class="ms-1">
+      <label for="searchLocked" class="col-form-label">
+        Locked
+      </label>
+      <select name="searchLocked"
+              class="form-select"
+              id="searchLocked"
+              formControlName="lockedOut">
+        <option value="1">Locked</option>
+        <option value="-1">Not locked</option>
+        <option value = 0> </option>
+      </select>
+    </div>
+
+    <button
+      class="btn btn-primary mr-1"
+      type="submit"
+      (click)="searchUsers()"
+      id="searchButton"
+    >
+      Search
+    </button>
+    <button
+      class="btn btn-danger"
+      type="button"
+      (click) ="reloadUsers()"
+      id="reloadButton"
+    >
+      Reset
+    </button>
+    <a class="btn btn-success" routerLink="create" aria-label="New user" id="createUserButton">
+      <i class="bi bi-plus-lg"></i>
+      Create User
+    </a>
+
+
+
+
+  </form>
+  <ul class="pagination justify-content-center" *ngIf="users.length > 0">
+    <li *ngIf="currentPageId!==1" class="page-item"><button class="page-link page-link-next-prev" (click)="showPrevPage()">Previous</button></li>
+    <li *ngIf="currentPageId===1" class="page-item"><button class="page-link page-link-next-prev-grey">Previous</button></li>
+    <div *ngFor="let number of pageNumbers; index as i">
+      <li *ngIf="showNumberPagination(i+1)" class="page-item"><button class="page-link page-link-direct" (click)="showPage(i+1)">{{i+1}}</button></li>
+      <li *ngIf="showDotsPagination(i+1)" class="page-item"><button class="page-link page-link-direct">...</button></li>
+      <li *ngIf="currentPageId === i+1" class="page-item"><button class="page-link page-link-current" (click)="showPage(i+1)">{{i+1}}</button></li>
+    </div>
+    <li *ngIf="currentPageId!==pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev" (click)="showNextPage()">Next</button></li>
+    <li *ngIf="currentPageId===pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev-grey">Next</button></li>
+  </ul>
+  <div class="mt-3" *ngIf="users.length > 0">
+    <table class="table table-hover">
+      <thead>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th>Locked</th>
+      <th class="min-width">Actions</th>
+      </thead>
+      <tbody *ngFor="let user of users; index as i">
+        <tr class="center-td">
+          <td>{{user.firstName}}</td>
+          <td>{{user.lastName}}</td>
+          <td>{{user.email}}</td>
+          <td>
+            <div *ngIf="user.lockedOut"> Yes</div>
+            <div *ngIf="!user.lockedOut"> No</div>
+          </td>
+          <td>
+            <div *ngIf="!user.lockedOut" class="btn-group">
+              <button class="btn btn-sm responsive-danger-button"
+                      aria-label="lock user"
+                      (click)="lockUser(user.email)">
+                <i class="bi bi-lock"></i>
+                Lock
+              </button>
+              <button class="btn btn-sm responsive-warning-button"
+                      aria-label="Reset pw"
+                      (click)="resetPassword(user.email)">
+                <i class="bi bi-envelope"></i>
+                Reset pw
+              </button>
+            </div>
+            <div *ngIf="user.lockedOut" class="btn-group">
+              <button class="btn btn-sm responsive-info-button"
+                      aria-label="Unlock user"
+                      (click)="unlockUser(user.email)">
+                <i class="bi bi-unlock"></i>
+                Unlock
+              </button>
+              <button class="btn btn-sm responsive-warning-button"
+                      aria-label="Reset pw"
+                      (click)="resetPassword(user.email)">
+                <i class="bi bi-envelope"></i>
+                Reset pw
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="no-matches">
+    No users found matching your queries
+  </div>
+  <ul class="pagination justify-content-center" *ngIf="users.length > 0">
+    <li *ngIf="currentPageId!==1" class="page-item"><button class="page-link page-link-next-prev" (click)="showPrevPage()">Previous</button></li>
+    <li *ngIf="currentPageId===1" class="page-item"><button class="page-link page-link-next-prev-grey">Previous</button></li>
+    <div *ngFor="let number of pageNumbers; index as i">
+      <li *ngIf="showNumberPagination(i+1)" class="page-item"><button class="page-link page-link-direct" (click)="showPage(i+1)">{{i+1}}</button></li>
+      <li *ngIf="showDotsPagination(i+1)" class="page-item"><button class="page-link page-link-direct">...</button></li>
+      <li *ngIf="currentPageId === i+1" class="page-item"><button class="page-link page-link-current" (click)="showPage(i+1)">{{i+1}}</button></li>
+    </div>
+    <li *ngIf="currentPageId!==pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev" (click)="showNextPage()">Next</button></li>
+    <li *ngIf="currentPageId===pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev-grey">Next</button></li>
+  </ul>
+</div>

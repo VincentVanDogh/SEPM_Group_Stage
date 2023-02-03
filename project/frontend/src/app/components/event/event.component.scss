@@ -1,0 +1,83 @@
+#createArtist{
+  margin-left: 0.6em;
+  padding-right: 9.5em;
+  padding-left: 9.5em;
+}
+#createLocation{
+  margin-left: 0.6em;
+  padding-right: 9.5em;
+  padding-left: 9.5em;
+}
+#createEvent{
+  padding-right: 9.5em;
+  padding-left: 9.5em;
+}
+
+#locationColumn{
+  margin-left: 0.3em;
+}
+
+
+.card {
+  margin-bottom: 1em;
+}
+
+
+.table-hover {
+  font-size: 2em;
+}
+
+#header {
+  background: #021f54;
+  color: white;
+  margin-top: 4em;
+}
+
+.pagination {
+  padding: 3em;
+}
+
+.page-link-direct {
+  background: #021f54;
+  color: white;
+  width: 2.5em;
+  height: 2.5em;
+}
+
+.page-link-next-prev {
+  background: #021f54;
+  color: white;
+  height: 2.5em;
+}
+
+.page-link-next-prev-grey {
+  background: dimgray;
+  color: white;
+  height: 2.5em;
+  pointer-events: none;
+}
+
+.page-link-current {
+  color: #021f54;
+  background: white;
+  outline-style: solid;
+  outline-color: #021F54;
+  width: 2.5em;
+  height: 2.5em;
+  pointer-events: none;
+}
+
+.btn-primary {
+  background: #021f54;
+  color: white;
+  border: #021F54;
+}
+.no-matches {
+  text-align: center;
+  font-size: 29px;
+  font-weight: bold;
+  margin: 2rem;
+}
+.current {
+  padding: 0 5px;
+}

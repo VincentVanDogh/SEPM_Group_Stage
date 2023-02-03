@@ -1,0 +1,149 @@
+<h4>Processed Ticket Purchases</h4>
+
+<div class="mt-3 shadow">
+  <div class="ticket-acquisition header">
+    <div></div>
+    <div>Acquisition ID</div>
+    <div>Total Price</div>
+    <div>Status</div>
+    <div>Reservations</div>
+    <div>Purchases</div>
+    <div></div>
+  </div>
+  <div>
+    <div *ngFor="let acquisition of ticketAcquisitions">
+      <div  class="ticket-acquisition hover">
+        <div>
+          <button [ngClass]="acquisition.expanded ? 'btn btn-sm bi-chevron-down' : 'btn btn-sm bi-chevron-right'"
+                  (click)="acquisition.expanded = !acquisition.expanded">
+          </button>
+        </div>
+        <div>{{acquisition.id}}</div>
+        <div>€ {{acquisitionTotalPrice(acquisition)}}</div>
+        <div class="{{acquisition.cancelled ? 'red-font' : 'lime-green-font'}} bold">{{acquisition.cancelled ? 'Cancelled' : 'Processed'}}</div>
+        <div>{{countTicketTypes(acquisition, 'RESERVED')}}</div>
+        <div>{{countTicketTypes(acquisition, 'PURCHASED')}}</div>
+        <div class="cancel-button-cell">
+          <a class="btn btn-sm responsive-danger-button"
+             aria-label="Delete ticket"
+             *ngIf="!acquisition.cancelled"
+             (click)="openDeleteTicketAcquisition(acquisitionDeleteWindow, acquisition)">
+            <i class="bi bi-trash"></i>
+          </a>
+        </div>
+      </div>
+      <ng-container *ngIf="acquisition.expanded">
+        <div class="ticket-details-list {{ticket.cancelled ? 'light-red-bg' : 'light-blue-bg'}}" *ngFor="let ticket of acquisition.tickets">
+          <div class="ticket-details">
+            <div class="entry">
+              <div class="bold font-theme">Event:</div>
+              <div>{{ticket.act.event.name}}</div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Date:</div>
+              <div>{{actStartAsLocaleDate(ticket.act)}}</div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Status:</div>
+              <div>{{ticket.cancelled ? 'Cancelled' : ticket.reservation}}</div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Venue:</div>
+              <div>{{ticket.act.event.location.venueName}}</div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Street:</div>
+              <div>{{ticket.act.event.location.address.street}}</div>
+            </div>
+            <div></div>
+            <div class="seat-info">
+              <div class="seat-block">
+                <div class="bold font-theme">Sector:&nbsp;</div>
+                <div class="seat-value">?</div>
+              </div>
+              <div class="seat-block">
+                <div class="bold font-theme">Row:&nbsp;</div>
+                <div class="seat-value">?</div>
+              </div>
+              <div class="seat-block">
+                <div class="bold font-theme">Seat:&nbsp;</div>
+                <div class="seat-value">?</div>
+              </div>
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">City:</div>
+              {{ticket.act.event.location.address.city}},
+              {{ticket.act.event.location.address.country}}
+            </div>
+            <div class="entry">
+              <div class="bold font-theme">Price:</div>
+              <div>?</div>
+            </div>
+          </div>
+          <div class="cancel-button-cell">
+            <a class="btn btn-sm responsive-danger-button"
+               aria-label="Delete ticket"
+               *ngIf="!ticket.cancelled"
+               (click)="openDeleteTicket(ticketDeleteWindow, ticket)">
+              <i class="bi bi-trash"></i>
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #acquisitionDeleteWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+    <button type="button"
+            class="close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross-click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete">Are you sure you want to cancel this order and the containing tickets?</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="cancelTicketAcquisition(acquisitionDelete)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ticketDeleteWindow let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete">Are you sure you want to cancel this ticket from your order?</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="cancelTicket(ticketDelete)">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>

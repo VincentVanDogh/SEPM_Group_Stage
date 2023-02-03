@@ -1,0 +1,108 @@
+<div class="pt-5">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <span class="anchor" id="formLogin"></span>
+
+      <div class="card shadow">
+        <div class="card-header">
+          <h3 class="mb-0">Edit Profile</h3>
+        </div>
+
+        <div class="card-body">
+          <form class="form" [formGroup]="profileForm" (ngSubmit)="editUser()">
+
+            <div class="row">
+              <div class="col">
+                <label for="inputFirstName">First Name</label>
+                <input type="text" name="firstName" formControlName="firstName" class="form-control" id="inputFirstName"
+                       aria-describedby="firstNameHelp" placeholder="Enter first name" value="{{getFirstName()}}">
+              </div>
+
+              <div class="col">
+                <label for="inputLastName">Last Name</label>
+                <input type="text" name="lastName" formControlName="lastName" class="form-control" id="inputLastName"
+                       aria-describedby="lastNameHelp" placeholder="Enter Last Name" value="{{getLastName()}}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="inputUsername">Email</label>
+              <input type="text" name="username" formControlName="username" class="form-control" id="inputUsername"
+                     aria-describedby="usernameHelp" placeholder="Enter email" value="{{getEmail()}}">
+            </div>
+            <div class="form-group">
+              <label for="passwordProfile">Current Password</label>
+              <input type="password" name="password" formControlName="passwordProfile" class="form-control" id="passwordProfile"
+                     placeholder="Enter current password  to confirm changes">
+              <div *ngIf="submitted && profileForm.controls.passwordProfile.errors" class="error">
+                <small class="form-text text-warning" *ngIf="profileForm.controls.passwordProfile.errors.required">Your password
+                  is
+                  required!
+                </small>
+                <small class="form-text text-warning" *ngIf="profileForm.controls.passwordProfile.errors.minlength">Your password
+                  must be at least 8 characters long!
+                </small>
+              </div>
+            </div>
+          </form>
+          <button type="button" (click)="editUser()" class="btn btn-success float-right">Save profile info</button>
+        </div>
+
+      </div>
+      <div class="card shadow">
+        <div class="card-header">
+          <h3 class="mb-0">Edit Password</h3>
+        </div>
+        <div class="card-body">
+          <form class="form" [formGroup]="passwordForm" (ngSubmit)="editPassword()">
+            <div>
+              <div class="form-group">
+                <label for="currPassword">Current Password</label>
+                <input type="password" name="currPassword" formControlName="currPassword" class="form-control" id="currPassword"
+                       placeholder="Enter current password">
+                <div *ngIf="submittedPassword && passwordForm.controls.currPassword.errors" class="error">
+                  <small class="form-text text-warning" *ngIf="passwordForm.controls.currPassword.errors.required">Your current password
+                    is
+                    required!
+                  </small>
+                  <small class="form-text text-warning" *ngIf="passwordForm.controls.currPassword.errors.minlength">
+                    Your password
+                    must be at least 8 characters long!
+                  </small>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="newPassword">New Password</label>
+                <input type="password" name="newPassword" formControlName="newPassword" class="form-control" id="newPassword"
+                       placeholder="Enter new password">
+                <div *ngIf="submittedPassword && passwordForm.controls.newPassword.errors" class="error">
+                  <small class="form-text text-warning" *ngIf="passwordForm.controls.newPassword.errors.required">Your password
+                    is
+                    required!
+                  </small>
+                  <small class="form-text text-warning" *ngIf="passwordForm.controls.newPassword.errors.minlength">Your password
+                    must be at least 8 characters long!
+                  </small>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmation">Confirm new password</label>
+                <input type="password" name="confirmation" formControlName="confirmation" class="form-control" id="confirmation"
+                       placeholder="Repeat new password">
+                <div *ngIf="submittedPassword && passwordForm.controls.confirmation.errors" class="error">
+                  <small class="form-text text-warning" *ngIf="passwordForm.controls.confirmation.errors.required">Please
+                    confirm your password!
+                  </small>
+                  <small class="form-text text-warning" *ngIf="passwordForm.controls.confirmation.errors.minlength">Your password
+                    must be at least 8 characters long!
+                  </small>
+                </div>
+              </div>
+            </div>
+          </form>
+          <button type="button" (click)="editPassword()" class="btn btn-success float-right">Save new password</button>
+        </div>
+    </div>
+  </div>
+</div>

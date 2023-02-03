@@ -1,0 +1,176 @@
+#title {
+  background: #021f54;
+  color: white;
+}
+
+.order {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 2em;
+  margin-top: 2em;
+}
+.merch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em;
+  border-style: solid;
+  border-color: black;
+  border-radius: 0.55rem;
+  margin: 0.5em 0;
+}
+.merch select {
+  padding: 0.25em;
+  border-style: none;
+}
+.merch div:last-child {
+  font-weight: bold;
+}
+
+.seat {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  text-align: center;
+}
+
+.event-name {
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+
+.act-name {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.ticket-main {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  text-align: center;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price {
+  text-align: right;
+  font-weight: bold;
+  align-self: flex-end;
+}
+
+.merch > .price {
+  align-self: center;
+}
+
+.ticket-arena {
+  align-self: flex-end;
+}
+
+.ticket {
+  padding: 1em;
+  border-radius: 0.55rem;
+  background: #021f54;
+  color: white;
+  margin: 1em 0;
+}
+
+.btn.btn-sm.responsive-danger-button {
+  background: red;
+  margin-left: 1rem;
+}
+
+.btn.btn-sm.responsive.purchase-btn {
+  background: lightcyan;
+}
+
+.btn.btn-sm.responsive.reserve-btn {
+  background: greenyellow;
+}
+
+// Style for "Merchandise" and Ticket Options ("All Tickets", "Tickets for Purchase", "Reserved Tickets")
+.ticket-table {
+  width: 100%;
+  background: #A8A8A8;
+
+  padding: 0.25em 0;
+  margin:  0.5em 0 1em 0;
+
+  border-style: none;
+  border-radius: 25px;
+}
+.ticket-table tr {
+  padding: 0.25em 0;
+  text-align: center;
+}
+table th {
+  padding: 0.25em 0;
+  border-left: 2px solid #FFF;
+  border-right: 2px solid #FFF;
+}
+table th:first-child {
+  border-left: none;
+}
+table th:last-child {
+  border-right: none;
+}
+.not-picked {
+  width: calc(100%/3);
+  border-color: #505050;
+  cursor: pointer;
+}
+.picked-all {
+  width: calc(100%/3);
+  color: white;
+  background: green;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+.picked-purchases {
+  width: calc(100%/3);
+  color: white;
+  background: green;
+}
+.picked-reservations {
+  width: calc(100%/3);
+  color: white;
+  background: green;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+}
+
+// Style for Checkout div
+.checkout {
+  text-align: right;
+  padding-bottom: 2em;
+  margin: 0 0 0 auto;
+  width: 35%;
+}
+.price-summary {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+.total-price {
+  margin: 0.5em 0 ;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+.checkout button {
+  border: none;
+  color: white;
+  background: black;
+  padding: 0.75em 2em;
+}
+
+.empty-cart {
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.confirm-delete {
+  font-size: 1.25em;
+  font-weight: 600;
+  padding: 0.5em;
+}

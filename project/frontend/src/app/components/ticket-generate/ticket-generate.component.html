@@ -1,0 +1,56 @@
+
+<div class="col-auto">
+  <div class="row" >
+    <div class="card" id="title">
+      <div class="card-header">
+        <h1 class="card-title">{{event?.name}}</h1>
+        <h3 class="card-subtitle mb-2">{{getStart(act?.start)}}</h3>
+        <p class="card-text">{{event?.location.address.postalCode}}
+          {{event?.location.address.city}},
+          {{event?.location.address.street}}</p>
+      </div>
+    </div>
+  </div>
+
+<app-stage-plan-single-specific *ngIf="stageLoaded" [id]="stageId" [actId]="actId" [seatData]="seatData" (seatDataChange)="mapToTickets($event)"></app-stage-plan-single-specific>
+
+<div *ngIf="!isAdmin()" class="col-auto">
+  <div class="container categories">
+    <div class="row">
+      <div class="col">
+        <h5>Total: {{calculateNumberOfTickets()}} tickets chosen</h5>
+        <div class="btn btn-success" (click)="addToCart()">
+          Add to Cart
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="tickets && !isAdmin()">
+  <div *ngFor="let ticket of tickets" class="ticket">
+    <div class="ticket-header">
+      <div class="event-act-name">
+        <div class="event-name">{{event.name.toUpperCase()}}</div>
+        <div class="act-name"></div>
+      </div>
+    </div>
+    <div class="ticket-main">
+      <div class="ticket-arena">
+        <div>{{event.location.venueName}}</div>
+        <div class="seat">
+          <div *ngIf="ticket.seatNo === 0">Sector: {{standingSectorDesignation[getSectorPositionInArray(ticket.sectorMapId)]}}</div>
+          <div *ngIf="ticket.seatNo === 0">Standing Ticket</div>
+          <div *ngIf="ticket.seatNo !== 0">Row: {{seatData[ticket.seatNo]?.rowNumber}}</div>
+          <div *ngIf="ticket.seatNo !== 0">Seat: {{seatData[ticket.seatNo]?.seatNumberInRow}}</div>
+        </div>
+      </div>
+      <div class="ticket-details">
+        <div>{{getStart(act.start)}}</div>
+        <div class="location">{{event.location.address.street}}</div>
+        <div>{{event.location.address.city}}, {{event.location.address.country}}</div>
+      </div>
+      <div class="price">{{getPriceOfSector(ticket.sectorMapId)}} €</div>
+    </div>
+  </div>
+</div>

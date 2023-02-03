@@ -1,0 +1,33 @@
+.card-header {
+  background: #021f54;
+}
+.mb-0 {
+  color: azure;
+}
+
+.btn-success {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 3%;
+  padding: 10px;
+}
+
+#resetButton{
+  margin-top: 0.5em;
+}
+
+.btn-primary {
+  background: #021f54;
+  color: white;
+  border: #021F54;
+}
+.card-body > form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#register {
+  text-align: center;
+  margin-top: 2%;
+}

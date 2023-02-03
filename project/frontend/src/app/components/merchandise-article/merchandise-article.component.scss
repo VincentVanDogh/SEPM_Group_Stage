@@ -1,0 +1,78 @@
+h4 {
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+  font-size: 2em;
+}
+h5 {
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.article {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 3em;
+}
+img {
+  width: 100%;
+  max-width: 600px;
+}
+.title-price {
+  margin-bottom: 2em
+}
+/**
+Input type radio styling
+ */
+.input-radios {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+.input-radio {
+  // display: flex;
+  // justify-content: space-between;
+  display: grid;
+  grid-template-columns: 200px 1fr 2fr;
+  /* justify-content: space-between; */
+  /* gap: 20px; */
+}
+input {
+  margin-right: 8px;
+}
+.cart-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  align-items: center;
+}
+.bi-cart-plus-fill, .bi.bi-cart, .bi.bi-cart-x-fill {
+  font-size: 30px;
+}
+.options {
+  display: grid;
+  gap: 10px;
+}
+.quantity {
+  display: flex;
+  margin-bottom: 3em;
+}
+.quantity h5 {
+  margin-bottom: 0;
+  margin-right: 16px;
+}
+select {
+  border: none;
+  border-bottom: 1px solid;
+}
+.disabled {
+  color: rgb(170, 170, 170)
+}
+.missing-points {
+  color: red;
+  font-weight: bold;
+}

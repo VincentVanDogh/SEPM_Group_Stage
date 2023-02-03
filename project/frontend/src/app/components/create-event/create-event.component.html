@@ -1,0 +1,205 @@
+<h1 class="display-2">Create new Event</h1>
+
+<br>
+
+<form [formGroup]="eventForm">
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="name" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Name:
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="name" class="form-control" type="text" formControlName="name">
+        </div>
+        <small *ngIf="name.touched && name.hasError('required')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Name is required
+        </small>
+      </div>
+    </div>
+
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="description" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Description:
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="description" class="form-control" type="text" formControlName="description">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="type" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Type:
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <select id="type" class="form-select" formControlName="type">
+            <ng-container *ngFor="let category of eventType | keyvalue; index as i">
+              <option [ngValue]="category.value">{{category.value | titlecase }}</option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="duration" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Duration:
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <div class="input-group">
+            <input id="duration" class="form-control" type="number" formControlName="duration">
+            <span class="input-group-text">minutes</span>
+          </div>
+        </div>
+        <small *ngIf="duration.touched && duration.hasError('pattern')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Duration must be a positive number
+        </small>
+        <small *ngIf="duration.touched && duration.hasError('required')"
+               class="text-md-end text-danger col-md-2 col-lg-6">
+          Duration must be a positive number
+        </small>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="mb-2 col-lg-6">
+      <div class="row">
+        <label for="location" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+          Location:
+        </label>
+        <div class="col-md-10 col-lg-8">
+          <input id="location" type="text" class="form-control" formControlName="location" (selectItem)="this.stages = []; findStagesByLocationId($event.item.id)"
+                 [ngbTypeahead]="searchLocation" [resultFormatter]="formatResultLocation" [inputFormatter]="formatInputLocation"/>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <br><br>
+
+  <ng-container formArrayName="acts">
+    <div class="mb-2 col-lg-12">
+      <div class="row">
+        <h3 class="display-8 col-md-10 col-lg-11">Acts</h3>
+        <button type="button" class="btn btn-primary col-md-10 col-lg-1" (click)="addAct()">Add</button>
+      </div>
+    </div>
+
+    <div class="mb-2 col-lg-12">
+      <small *ngIf="acts.length === 0" class="text-md-end text-danger col-md-2 col-lg-6">
+        There must be at least one Act
+      </small>
+    </div>
+
+    <div *ngFor="let act of acts.controls; index as i">
+      <ng-container [formGroupName]="i">
+        <div class="row">
+          <div class="mb-2 col-lg-6">
+            <div class="row">
+              <label for="start" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+                Date and Time:
+              </label>
+              <div class="col-md-10 col-lg-8">
+                <input id="start" class="form-control" type="datetime-local" formControlName="start">
+              </div>
+              <small *ngIf="act.get('start').touched && act.get('start').hasError('required')"
+                     class="text-md-end text-danger col-md-2 col-lg-6">
+                Date and Time is required
+              </small>
+            </div>
+          </div>
+
+          <div class="mb-2 col-lg-5">
+            <div class="row">
+              <label for="stage" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+                Stage:
+              </label>
+              <div class="col-md-10 col-lg-8">
+                <select id="stage" class="form-select" formControlName="stageId">
+                  <option *ngFor="let stage of stages" [value]="stage.id">
+                    {{stage.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-danger mb-2 col-lg-1" (click)="removeAct(i)">
+            Delete
+          </button>
+        </div>
+        <div>
+          <button *ngIf="!act.get('stageId').invalid" class="btn btn-secondary" (click)="actShowPrice[i] = !actShowPrice[i]">
+            Set Ticket Prices
+          </button>
+          <div *ngIf="actShowPrice[i]">
+            <app-stage-plan-single-price-config [id]="getStageIdForAct(i)" [prices]="actPrices[i]" (pricesChange)="setPrices($event, i)"></app-stage-plan-single-price-config>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <br><br>
+
+  <ng-container formArrayName="artistArray">
+
+    <div class="mb-2 col-lg-12">
+      <div class="row">
+        <h3 class="display-8 col-md-10 col-lg-11">Artists</h3>
+        <button type="button" class="btn btn-primary col-md-10 col-lg-1" (click)="addArtist()">Add</button>
+      </div>
+    </div>
+
+    <div class="mb-2 col-lg-12">
+      <small *ngIf="artistArray.length === 0" class="text-md-end text-danger">
+        There must be at least one Artist
+      </small>
+    </div>
+
+    <div *ngFor="let id of artistArray.controls; index as i">
+      <div class="mb-2 col-lg-12">
+        <div class="row">
+          <label for="artist" class="col-form-label text-md-end text-muted col-md-2 col-lg-2">
+            Select Artist:
+          </label>
+          <div class="col-md-10 col-lg-9">
+            <input id="artist" type="text" class="form-control" formControlName="{{i}}"
+                   [ngbTypeahead]="searchArtist" [resultFormatter]="formatArtist" [inputFormatter]="formatArtist"/>
+          </div>
+          <button type="button" class="btn btn-danger col-md-10 col-lg-1" (click)="removeArtist(i)">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <br><br>
+
+  <button type="submit" class="btn btn-success" [disabled]="!eventForm.valid" (click)="submitEvent()">Submit</button>
+</form>
+
+<!--hr> debugging
+
+<p>Form Value: {{ eventForm.value | json }}</p>
+
+<p>Form Status: {{ eventForm.status }}</p>
+
+<p>Acts: {{ acts.value | json }}</p>
+
+<p>Location id: {{ location.value | json }}</p>
+
+<p>searchValue: {{searchValue}}</p>
+
+<p>stages: {{stages.length}}</p-->

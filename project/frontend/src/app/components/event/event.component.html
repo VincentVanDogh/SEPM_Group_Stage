@@ -1,0 +1,161 @@
+<div *ngIf="currentPageId === 1" id="top10Wrap">
+  <app-top-ten-events></app-top-ten-events>
+</div>
+
+<div>
+  <div class="card shadow" id="header">
+    <div class="card-header">
+      <h1 class="card-title">Current Events</h1>
+    </div>
+  </div>
+  <form class="d-flex flex-row w-auto mb-3" [formGroup]="searchForm">
+    <div class="flex-grow-1">
+      <label for="search" class="col-form-label">
+        Search
+      </label>
+      <input type="text" name="search"
+             class="form-control"
+             id="search"
+             formControlName="search"
+             placeholder="Artist, Venue, Event name...">
+    </div>
+
+    <div class="flex-grow-1" id="locationColumn">
+      <label for="location" class="col-form-label">
+        Location
+      </label>
+      <input type="text" name="cityName"
+             class="form-control"
+             id="location"
+             formControlName="location"
+             placeholder="Country, City, Postal Code...">
+    </div>
+    <div class="ms-1">
+      <label for="searchCategory" class="col-form-label">
+        Category
+      </label>
+      <select name="searchCategory"
+              class="form-select"
+              id="searchCategory"
+              formControlName="category"
+              [(ngModel)]="selectedCategory"
+      >
+        <option>All Categories</option>
+        <ng-container *ngFor="let category of eventType | keyvalue; index as i">
+          <option [ngValue]="category.value">{{category.value | titlecase }}</option>
+        </ng-container>
+      </select>
+
+    </div>
+    <div class = "ms-1">
+      <label for="searchDateFrom" class ="col-form-label">
+        From
+      </label>
+      <input type="date"
+             name="searchTime"
+             class="form-control"
+             id="searchDateFrom"
+             formControlName="dateFrom"
+      >
+    </div>
+    <div class = "ms-1">
+      <label for="searchDateTo" class ="col-form-label">
+        To
+      </label>
+      <input type="date"
+             name="searchTimeTo"
+             class="form-control"
+             id="searchDateTo"
+             formControlName="dateTo"
+      >
+    </div>
+
+    <button
+      class="btn btn-primary mr-1"
+      type="submit"
+      (click)="startSearch()"
+      style="margin-top: 2.4em; margin-left: 0.2em; margin-right: 0.2em"
+    >
+      Search
+    </button>
+    <button
+      class="btn btn-danger"
+      type="button"
+      (click) ="reloadEvents();"
+      style="margin-top: 2.4em; margin-right: 0.2em"
+    >
+      Reset
+    </button>
+  </form>
+  <div class="d-flex flex-row w-auto mb-3">
+    <div *ngIf="isAdmin()">
+      <a id="createEvent" class="btn btn-success" routerLink="/events/create" routerLinkActive="active" aria-label="Create Event">
+        <i class="bi bi-plus-lg"></i>
+        Create Events
+      </a>
+    </div>
+    <div *ngIf="isAdmin()">
+      <a id="createLocation" class="btn btn-success" routerLink="/locations/create" routerLinkActive="active" aria-label="Create Event">
+        <i class="bi bi-plus-lg"></i>
+        Create Location
+      </a>
+    </div>
+    <div *ngIf="isAdmin()">
+      <a id="createArtist" class="btn btn-success" routerLink="/artists/create" routerLinkActive="active" aria-label="Create Artist">
+        <i class="bi bi-plus-lg"></i>
+        Create Artist
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<ul class="pagination justify-content-center" *ngIf="getEvents()?.length > 0">
+  <li *ngIf="currentPageId!==1" class="page-item"><button class="page-link page-link-next-prev" (click)="showPrevPage()">Previous</button></li>
+  <li *ngIf="currentPageId===1" class="page-item"><button class="page-link page-link-next-prev-grey">Previous</button></li>
+  <div *ngFor="let number of pageNumbers; index as i">
+    <li *ngIf="showNumberPagination(i+1)" class="page-item"><button class="page-link page-link-direct" (click)="showPage(i+1)">{{i+1}}</button></li>
+    <li *ngIf="showDotsPagination(i+1)" class="page-item"><button class="page-link page-link-direct">...</button></li>
+    <li *ngIf="currentPageId === i+1" class="page-item current"><button class="page-link page-link-current" (click)="showPage(i+1)">{{i+1}}</button></li>
+  </div>
+  <li *ngIf="currentPageId!==pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev" (click)="showNextPage()">Next</button></li>
+  <li *ngIf="currentPageId===pageNumbers.length" class="page-item"><button class="page-link page-link-next-prev-grey">Next</button></li>
+</ul>
+
+
+<div class="col-auto" *ngIf="getEvents()?.length > 0">
+  <div class="row" *ngFor="let event of getEvents(); index as i">
+    <div class="card shadow">
+      <div class="card-body">
+        <h5 class="card-title">{{event.name}}</h5>
+        <h6 class="card-subtitle mb-2">{{formatArtistsForEvent(event.featuredArtists)}}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">{{event.type}}, {{event.duration}} minutes,
+          {{event.location.address.postalCode}} {{event.location.address.city}}, {{event.location.address.street}}</h6>
+        <p class="card-text">{{event.description}}</p>
+        <button type="button" class="btn btn-primary" (click)="showActs(event.id)">
+          Show Acts
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="getEvents()?.length === 0" class="no-matches">
+  No events found matching your queries
+</div>
+
+<ul class="pagination justify-content-center" *ngIf="getEvents()?.length > 0">
+  <li *ngIf="currentPageId!==1" class="page-item"><button class="page-link page-link-next-prev" (click)="showPrevPage()">Previous</button></li>
+  <li *ngIf="currentPageId===1" class="page-item"><button class="page-link page-link-next-prev-grey">Previous</button></li>
+  <div *ngFor="let number of pageNumbers; index as i">
+    <li *ngIf="showNumberPagination(i+1)" class="page-item"><button class="page-link page-link-direct" (click)="showPage(i+1)">{{i+1}}</button></li>
+    <li *ngIf="showDotsPagination(i+1)" class="page-item"><button class="page-link page-link-direct">...</button></li>
+    <li *ngIf="currentPageId === i+1" class="page-item current"><button class="page-link page-link-current" (click)="showPage(i+1)">{{i+1}}</button></li>
+  </div>
+  <li *ngIf="currentPageId!==pageNumbers?.length" class="page-item"><button class="page-link page-link-next-prev" (click)="showNextPage()">Next</button></li>
+  <li *ngIf="currentPageId===pageNumbers?.length" class="page-item"><button class="page-link page-link-next-prev-grey">Next</button></li>
+</ul>
+
+
+
+
+

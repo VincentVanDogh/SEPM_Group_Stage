@@ -1,0 +1,165 @@
+@import "src/styles";
+
+.merch-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 300px);
+  align-items: center;
+  grid-gap: 30px;
+  margin-top: 2rem;
+  justify-content: center;
+}
+.box {
+  // background: transparent;
+  background: #FFFFFF;
+  box-shadow: 5px 30px 56.1276px rgb(55 55 55 / 12%);
+  border-radius: 10px;
+  position: relative;
+  transition: all 0.35s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.merch-info {
+  color: #FFFFFF;
+  background: var(--theme);
+  width: 100%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 0 1em;
+}
+.box:hover {
+  transform: translateY(-5px);
+}
+.box img {
+  width: 250px;
+  height: 250px;
+}
+.box h4 {
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin: 8px 0;
+  // margin-bottom: 8px;
+}
+.box h5 {
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin: 8px 0;
+}
+.img-frame {
+  width: 250px;
+}
+.in-cart {
+  position: absolute;
+  top: 0;
+  opacity: 0.5;
+}
+
+.number-input {
+  width: 9em;
+}
+.my-last {
+  margin-left: auto;
+  margin-right: 0;
+}
+.mb-3 {
+  margin-bottom: 0.5rem !important;
+}
+.center {
+  display: flex;
+  justify-content: center;
+}
+.filter-sort-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  align-items: center;
+}
+.filter {
+  display: flex;
+  align-items: center;
+}
+.filter > span {
+  margin-left: 20px;
+}
+.filter > span:not(:last-child) {
+  // border-bottom: solid 2px;
+  color: #A0A0A0;
+}
+.filter > span:hover {
+  cursor: pointer;
+  color: #000000;
+}
+.filter > span:not(:last-child):hover {
+  border-bottom: solid 2px #000000;
+  transition: transform 250ms ease-in-out;
+}
+.bi-funnel {
+  font-size: 30px;
+}
+.bi-funnel-fill {
+  font-size: 30px;
+}
+.prices {
+  display: flex;
+  justify-content: space-between;
+}
+.merch-article-arr-len {
+  font-size: 20px;
+}
+
+.pagination {
+  padding: 3em;
+}
+
+.page-link-direct {
+  background: #021f54;
+  color: white;
+  width: 2.5em;
+  height: 2.5em;
+}
+.current {
+  padding: 0 5px;
+}
+
+.page-link-next-prev {
+  background: #021f54;
+  color: white;
+  height: 2.5em;
+}
+
+.page-link-next-prev-grey {
+  background: dimgray;
+  color: white;
+  height: 2.5em;
+  pointer-events: none;
+}
+
+.page-link-current {
+  color: #021f54;
+  background: white;
+  outline-style: solid;
+  outline-color: #021F54;
+  width: 2.5em;
+  height: 2.5em;
+  pointer-events: none;
+}
+
+.btn-primary {
+  background: #021f54;
+  color: white;
+  border: #021F54;
+}
+
+#header {
+  background: #021f54;
+  color: white;
+  margin-top: 4em;
+}
+.no-matches {
+  text-align: center;
+  font-size: 29px;
+  font-weight: bold;
+  margin: 2rem;
+}

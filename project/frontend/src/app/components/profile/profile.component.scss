@@ -1,0 +1,32 @@
+.card-header {
+  background: #021f54;
+}
+.mb-0 {
+  color: azure;
+}
+.padding-bottom-2 {
+  padding-bottom: 2rem;
+}
+.padding-bottom-3 {
+  padding-bottom: 3rem;
+}
+.flex {
+  display: flex;
+}
+.space-between {
+  justify-content: space-between;
+}
+
+.btn-primary {
+  background: #021f54;
+  color: white;
+  border: #021F54;
+}
+.bi.bi-x-circle-fill.modal-circle {
+  font-size: 30px;
+  cursor: pointer;
+  transition: color .4s ease;
+}
+.bi.bi-x-circle-fill.modal-circle:hover {
+  color: #505050;
+}

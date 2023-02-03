@@ -1,0 +1,83 @@
+<nav class="navbar navbar-expand-lg navbar-dark nav-grid">
+  <img src="../../../assets/ticketline_logo.png" id="logo" routerLink="/" alt="Ticketline Logo">
+  <div class="collapse navbar-collapse nav-routes" id="navbarSupportedContent" *ngIf="!phoneMode">
+    <ul class="navbar-nav mr-5">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/events" routerLinkActive="active">Events</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/message" routerLinkActive="active">News</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-5">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/merchandise" routerLinkActive="active">Merchandise</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a *ngIf="isAdmin() && authService.isLoggedIn()" class="nav-link" type="button" routerLink="/users" routerLinkActive="active">Users</a>
+      </li>
+    </ul>
+  </div>
+  <div class="collapse navbar-collapse nav-routes nav-personal" *ngIf="!phoneMode">
+    <ul class="navbar-nav mr-5">
+      <a id="profile" class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/profile" routerLinkActive="active">Profile</a>
+    </ul>
+    <ul class="navbar-nav mr-5">
+      <a class="nav-link" *ngIf="!authService.isLoggedIn()" routerLink="/" (click)="router.navigate(['/login'], {state:{redirect: this.router.url}})" routerLinkActive="active">Login</a>
+      <a class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/" (click)="authService.logoutUser()">Logout</a>
+      <a class="nav-link" *ngIf="!authService.isLoggedIn()" routerLink="/" (click)="router.navigate(['/registration'], {state:{redirect: this.router.url}})" routerLinkActive="active">Registration</a>
+    </ul>
+    <ul class="navbar-nav mr-5" *ngIf="!isAdmin() && authService.isLoggedIn()">
+      <a class="bi bi-cart nav-link" routerLink="/shopping-cart" routerLinkActive="active"></a>
+      <div class="cart-item-amount" routerLink="/shopping-cart" >{{cartTicketSize}}</div>
+      <div class="point-balance">Points: {{cartBonusPoints}}</div>
+    </ul>
+  </div>
+  <div *ngIf="phoneMode"></div>
+  <div class="collapse navbar-collapse nav-routes nav-personal" *ngIf="phoneMode">
+    <button class="navbar-toggler ml-5" type="button" (window:resize)="onResize($event)" *ngIf="!phoneNavExpanded" (click)="phoneNavExpanded = !phoneNavExpanded">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <button class="navbar-toggler ml-5" type="button" (window:resize)="onResize($event)" *ngIf="phoneNavExpanded" (click)="phoneNavExpanded = !phoneNavExpanded">
+      <i class="bi bi-x"></i>
+    </button>
+  </div>
+</nav>
+<div class="nav-expand" *ngIf="phoneNavExpanded">
+  <span class="nav-expand-options">
+    <ul class="navbar-nav mr-5">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/events" routerLinkActive="active" (click)="phoneNavExpanded = !phoneNavExpanded">Events</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/message" routerLinkActive="active" (click)="phoneNavExpanded = !phoneNavExpanded">News</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-5">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/merchandise" routerLinkActive="active" (click)="phoneNavExpanded = !phoneNavExpanded">Merchandise</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-5" *ngIf="!isAdmin() && authService.isLoggedIn()">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/shopping-cart" routerLinkActive="active" (click)="phoneNavExpanded = !phoneNavExpanded">Shopping Cart</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-5">
+      <a class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/profile" routerLinkActive="active" (click)="phoneNavExpanded = !phoneNavExpanded">Profile</a>
+    </ul>
+  </span>
+  <span class="nav-expand-options logout-expand">
+    <ul class="navbar-nav mr-5">
+      <a class="nav-link" *ngIf="!authService.isLoggedIn()" routerLink="/" (click)="router.navigate(['/login'], {state:{redirect: this.router.url}}); phoneNavExpanded = !phoneNavExpanded" routerLinkActive="active">Login</a>
+      <a class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/" (click)="authService.logoutUser(); phoneNavExpanded = !phoneNavExpanded">Logout</a>
+      <a class="nav-link" *ngIf="!authService.isLoggedIn()" routerLink="/" (click)="router.navigate(['/registration'], {state:{redirect: this.router.url}}); phoneNavExpanded = !phoneNavExpanded" routerLinkActive="active">Registration</a>
+    </ul>
+  </span>
+</div>

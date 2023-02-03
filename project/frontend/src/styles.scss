@@ -1,0 +1,82 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~bootstrap-icons";
+
+:root {
+  --android-green: #32DE84;
+  --light-blue: #E6F3FF;
+  --light-blue-2: #CCE6FF;
+  --theme: #021F54;
+}
+
+body {
+  background-color: whitesmoke;
+}
+/***********************************
+ BACKGROUNDS
+************************************/
+.theme {
+  background: #021f54;
+}
+.light-green {
+  background: #e9ffdb;
+}
+.light-green-bg {
+  background: #e9ffdb;
+}
+.light-green-bg:hover {
+  background: #e2ffcf;
+}
+.light-red-bg {
+  background: #ffe9e9;
+}
+.light-red-bg:hover {
+  background: #ffd8d6;
+}
+.red-bg {
+  background: red;
+}
+.light-blue-bg {
+  background: #e6f3ff;
+}
+.light-blue-bg:hover {
+  background: #CCE6FF;
+}
+/***********************************
+ FONTS
+************************************/
+.font-theme {
+  color: #021f54;
+}
+.bold {
+  font-weight: bold;
+}
+.green-font {
+  color: #00FF00;
+}
+.lime-green-font {
+  color: #32CD32;
+}
+.android-green-font {
+  color: var(--android-green);
+}
+.red-font {
+  color: #FF0000;
+}
+.light-blue-font {
+  color: var(--light-blue);
+}
+.light-blue-font-2 {
+  color: var(--light-blue-2)
+}
+/***********************************
+ POP-UP WINDOW
+************************************/
+.bi.bi-x-circle-fill.modal-circle {
+  font-size: 30px;
+  cursor: pointer;
+  transition: color .4s ease;
+}
+.bi.bi-x-circle-fill.modal-circle:hover {
+  color: #505050;
+}

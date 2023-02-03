@@ -1,0 +1,421 @@
+
+<h1 *ngIf="!(isAdmin())" class="display-1">Choose your seats</h1>
+
+<div *ngIf="!(isAdmin())" class="container">
+  <div class="row">
+    <div class="col-auto">
+      <div class="stage-plan-and-legend">
+        <div class="seating-plan">
+          <div class="container">
+            <div class="row">
+              <div class="col-auto">
+                <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+                  <div *ngIf="i===0">{{resetRowNumber()}}</div>
+                  <div *ngIf="sector">
+                    <div *ngIf="sector.standing && isSectorOrientationEast(sector)">
+                      <div class="btn btn-outline-primary" (click)="(seatChosen[sector.firstSeatNr] = true)
+                      && pushToTicketsStanding(sector.firstSeatNr, standingTickets[i], sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces))">
+                        Standing Sector {{standingSectorDesignation[i]}} <br>
+                        {{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}} tickets available
+                        <div *ngIf="seatChosen[sector.firstSeatNr]">
+                          <input type="number"
+                                 class="form-control standing"
+                                 min="0"
+                                 max="{{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}}"
+                                 [(ngModel)]="standingTickets[i]"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationEast(sector)"  class="sector">
+                      <h3 class="sector-price">{{priceAsString(sector.price)}} €</h3>
+                      <div *ngFor="let c of [].constructor(sector.numColumns); index as j" class="seat-row">
+                        <div *ngFor="let r of [].constructor(sector.numRows); index as k">
+                          <div *ngIf="j===0" class="btn btn-sm btn-outline-dark seat-row">{{incRowNumber(sector, k)}}</div>
+                          <button class="btn btn-sm btn-dark east"
+                                  *ngIf="sector.seatStatusMap[k*sector.numColumns+j] !== seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger east"
+                                  (click)="(seatChosen[sector.firstSeatNr+k*sector.numColumns+j] = !seatChosen[sector.firstSeatNr+k*sector.numColumns+j])
+                                  && pushToTickets(sector.firstSeatNr+k*sector.numColumns+j, j+1, getSectorOrientation(sector), false)"
+                                  *ngIf="!seatChosen[sector.firstSeatNr+k*sector.numColumns+j] && sector.seatStatusMap[k*sector.numColumns+j] === seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                          <button class="btn btn-sm btn-success east"
+                                  (click)="(seatChosen[sector.firstSeatNr+k*sector.numColumns+j] = !seatChosen[sector.firstSeatNr+k*sector.numColumns+j])
+                                   || pushToTickets(sector.firstSeatNr+k*sector.numColumns+j, 0, getSectorOrientation(sector), true)"
+                                  *ngIf="seatChosen[sector.firstSeatNr+k*sector.numColumns+j] && sector.seatStatusMap[k*sector.numColumns+j] === seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+                  <div *ngIf="i===0">{{resetRowNumber()}}</div>
+                  <div *ngIf="sector">
+                    <div *ngIf="sector.standing && isSectorOrientationSouth(sector)">
+                      <div class="btn btn-outline-primary" (click)="(seatChosen[sector.firstSeatNr] = true)
+                      && pushToTicketsStanding(sector.firstSeatNr, standingTickets[i], sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces))">
+                        Standing Sector {{standingSectorDesignation[i]}} <br>
+                        {{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}} tickets available
+                        <div *ngIf="seatChosen[sector.firstSeatNr]">
+                          <input type="number"
+                                 class="form-control standing"
+                                 min="0"
+                                 max="{{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}}"
+                                 [(ngModel)]="standingTickets[i]"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationSouth(sector)" class="sector">
+                      <h3 class="sector-price">{{priceAsString(sector.price)}} €</h3>
+                      <div *ngFor="let r of [].constructor(sector.numRows); index as j" class="seat-row justify-content-center">
+                        <div class="btn btn-sm btn-outline-dark">{{incRowNumber(sector, j)}}</div>
+                        <div *ngFor="let c of [].constructor(sector.numColumns); index as k">
+                          <button class="btn btn-sm btn-dark"
+                                  *ngIf="sector.seatStatusMap[j*sector.numColumns+k] !== seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger"
+                                  (click)="(seatChosen[sector.firstSeatNr+j*sector.numColumns+k] = !seatChosen[sector.firstSeatNr+j*sector.numColumns+k])
+                                   && pushToTickets(sector.firstSeatNr+j*sector.numColumns+k, k+1, getSectorOrientation(sector), false)"
+                                  *ngIf="!seatChosen[sector.firstSeatNr+j*sector.numColumns+k] && sector.seatStatusMap[j*sector.numColumns+k] === seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                          <button class="btn btn-sm btn-success"
+                                  (click)="seatChosen[sector.firstSeatNr+j*sector.numColumns+k] = !seatChosen[sector.firstSeatNr+j*sector.numColumns+k]
+                                   || pushToTickets(sector.firstSeatNr+j*sector.numColumns+k, 0, getSectorOrientation(sector), true)"
+                                  *ngIf="seatChosen[sector.firstSeatNr+j*sector.numColumns+k] && sector.seatStatusMap[j*sector.numColumns+k] === seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="sector.standing && isSectorOrientationNorth(sector)" >
+                      <div class="btn btn-outline-primary" (click)="(seatChosen[sector.firstSeatNr] = true)
+                      && pushToTicketsStanding(sector.firstSeatNr, standingTickets[i], sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces))">
+                        Standing Sector {{standingSectorDesignation[i]}} <br>
+                        {{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}} tickets available
+                        <div *ngIf="seatChosen[sector.firstSeatNr]">
+                          <input type="number"
+                                 class="form-control standing"
+                                 min="0"
+                                 max="{{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}}"
+                                 [(ngModel)]="standingTickets[i]"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationNorth(sector)" class="sector">
+                      <h3 class="sector-price">{{priceAsString(sector.price)}} €</h3>
+                      <div *ngFor="let r of [].constructor(sector.numRows); index as j" class="seat-row justify-content-center">
+                        <div class="btn btn-sm btn-outline-dark">{{incRowNumber(sector, j)}}</div>
+                        <div *ngFor="let c of [].constructor(sector.numColumns); index as k">
+                          <button class="btn btn-sm btn-dark"
+                                  *ngIf="sector.seatStatusMap[j*sector.numColumns+k] !== seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger"
+                                  (click)="(seatChosen[sector.firstSeatNr+j*sector.numColumns+k] = !seatChosen[sector.firstSeatNr+j*sector.numColumns+k])
+                                   && pushToTickets(sector.firstSeatNr+j*sector.numColumns+k, k+1, getSectorOrientation(sector), false)"
+                                  *ngIf="!seatChosen[sector.firstSeatNr+j*sector.numColumns+k] && sector.seatStatusMap[j*sector.numColumns+k] === seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                          <button class="btn btn-sm btn-success"
+                                  (click)="(seatChosen[sector.firstSeatNr+j*sector.numColumns+k] = !seatChosen[sector.firstSeatNr+j*sector.numColumns+k])
+                                   || pushToTickets(sector.firstSeatNr+j*sector.numColumns+k, 0, getSectorOrientation(sector), true)"
+                                  *ngIf="seatChosen[sector.firstSeatNr+j*sector.numColumns+k] && sector.seatStatusMap[j*sector.numColumns+k] === seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!sector">
+                    <span *ngIf="i===24; else noSector"> <div class="stage">Stage</div> </span>
+                    <ng-template #noSector></ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+                  <div *ngIf="i===0">{{resetRowNumber()}}</div>
+                  <div *ngIf="sector">
+                    <div *ngIf="sector.standing && isSectorOrientationWest(sector)">
+                      <div class="btn btn-outline-primary" (click)="(seatChosen[sector.firstSeatNr] = true)
+                      && pushToTicketsStanding(sector.firstSeatNr, standingTickets[i], sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces))">
+                        Standing Sector {{standingSectorDesignation[i]}} <br>
+                        {{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}} tickets available
+                        <div *ngIf="seatChosen[sector.firstSeatNr]">
+                          <input type="number"
+                                 class="form-control standing"
+                                 min="0"
+                                 max="{{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}}"
+                                 [(ngModel)]="standingTickets[i]"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationWest(sector)">
+                      <div *ngFor="let c of [].constructor(sector.numColumns); index as j" class="seat-row justify-content-end">
+                        <div *ngFor="let r of [].constructor(sector.numRows); index as k">
+                          <div *ngIf="j===0" class="btn btn-sm btn-outline-dark seat-row">{{incRowNumber(sector, k)}}</div>
+                          <button class="btn btn-sm btn-dark west"
+                                  *ngIf="sector.seatStatusMap[k*sector.numColumns+j] !== seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger west"
+                                  (click)="(seatChosen[sector.firstSeatNr+k*sector.numColumns+j] = !seatChosen[sector.firstSeatNr+k*sector.numColumns+j])
+                                  && pushToTickets(sector.firstSeatNr+k*sector.numColumns+j, j+1, getSectorOrientation(sector), false)"
+                                  *ngIf="!seatChosen[sector.firstSeatNr+k*sector.numColumns+j] && sector.seatStatusMap[k*sector.numColumns+j] === seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                          <button class="btn btn-sm btn-success west"
+                                  (click)="(seatChosen[sector.firstSeatNr+k*sector.numColumns+j] = !seatChosen[sector.firstSeatNr+k*sector.numColumns+j])
+                                  || pushToTickets(sector.firstSeatNr+k*sector.numColumns+j, 0, getSectorOrientation(sector), true)"
+                                  *ngIf="seatChosen[sector.firstSeatNr+k*sector.numColumns+j] && sector.seatStatusMap[k*sector.numColumns+j] === seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h2 class="col-auto">
+      Legend:
+      <div class="seat-row">
+        <button class="btn btn-sm btn-outline-danger no-click"> 0 </button>
+        <h6>Seat is free</h6>
+      </div>
+      <div class="seat-row">
+        <button class="btn btn-sm btn-dark no-click"> 0 </button>
+        <h6>Seat is taken</h6>
+      </div>
+      <div class="seat-row">
+        <button class="btn btn-sm btn-success no-click"> 0 </button>
+        <h6>Chosen Seat</h6>
+      </div>
+    </h2>
+  </div>
+</div>
+
+<h1 *ngIf="isAdmin()" class="display-1">Showing Stage {{stagePlan?.name}}</h1>
+
+<div *ngIf="isAdmin()" class="container no-click">
+  <div class="row">
+    <div class="col-auto">
+      <div class="stage-plan-and-legend">
+        <div class="seating-plan">
+          <div class="container">
+            <div class="row">
+              <div class="col-auto">
+                <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+                  <div *ngIf="i===0">{{resetRowNumber()}}</div>
+                  <div *ngIf="sector">
+                    <div *ngIf="sector.standing && isSectorOrientationEast(sector)">
+                      <div class="btn btn-outline-primary" (click)="seatChosen[sector.firstSeatNr] = true">
+                        Standing Sector {{standingSectorDesignation[i]}} <br>
+                        {{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}} tickets available
+                        <div *ngIf="seatChosen[sector.firstSeatNr]">
+                          <input type="number"
+                                 class="form-control standing"
+                                 min="0"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationEast(sector)">
+                      <div *ngFor="let c of [].constructor(sector.numColumns); index as j" class="seat-row">
+                        <div *ngFor="let r of [].constructor(sector.numRows); index as k">
+                          <div *ngIf="j===0" class="btn btn-sm btn-outline-dark seat-row">{{incRowNumber(sector, k)}}</div>
+                          <button class="btn btn-sm btn-dark east"
+                                  *ngIf="sector.seatStatusMap[k*sector.numColumns+j] !== seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger east"
+                                  (click)="(seatChosen[sector.firstSeatNr+k*sector.numColumns+j] = !seatChosen[sector.firstSeatNr+k*sector.numColumns+j])
+                                  && pushToTickets(sector.firstSeatNr+k*sector.numColumns+j, j+1, getSectorOrientation(sector), false)"
+                                  *ngIf="!seatChosen[sector.firstSeatNr+k*sector.numColumns+j] && sector.seatStatusMap[k*sector.numColumns+j] === seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                          <button class="btn btn-sm btn-success east"
+                                  (click)="(seatChosen[sector.firstSeatNr+k*sector.numColumns+j] = !seatChosen[sector.firstSeatNr+k*sector.numColumns+j])
+                                   || pushToTickets(sector.firstSeatNr+k*sector.numColumns+j, 0, getSectorOrientation(sector), true)"
+                                  *ngIf="seatChosen[sector.firstSeatNr+k*sector.numColumns+j] && sector.seatStatusMap[k*sector.numColumns+j] === seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+                  <div *ngIf="i===0">{{resetRowNumber()}}</div>
+                  <div *ngIf="sector">
+                    <div *ngIf="sector.standing && isSectorOrientationSouth(sector)">
+                      <div class="btn btn-outline-primary" (click)="seatChosen[sector.firstSeatNr] = true">
+                        Standing Sector {{standingSectorDesignation[i]}} <br>
+                        {{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}} tickets available
+                        <div *ngIf="seatChosen[sector.firstSeatNr]">
+                          <input type="number"
+                                 class="form-control standing"
+                                 min="0"
+                                 [(ngModel)]="standingTickets"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationSouth(sector)">
+                      <div *ngFor="let r of [].constructor(sector.numRows); index as j" class="seat-row justify-content-center">
+                        <div class="btn btn-sm btn-outline-dark">{{incRowNumber(sector, j)}}</div>
+                        <div *ngFor="let c of [].constructor(sector.numColumns); index as k">
+                          <button class="btn btn-sm btn-dark"
+                                  *ngIf="sector.seatStatusMap[j*sector.numColumns+k] !== seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger"
+                                  (click)="(seatChosen[sector.firstSeatNr+j*sector.numColumns+k] = !seatChosen[sector.firstSeatNr+j*sector.numColumns+k])
+                                   && pushToTickets(sector.firstSeatNr+j*sector.numColumns+k, k+1, getSectorOrientation(sector), false)"
+                                  *ngIf="!seatChosen[sector.firstSeatNr+j*sector.numColumns+k] && sector.seatStatusMap[j*sector.numColumns+k] === seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                          <button class="btn btn-sm btn-success"
+                                  (click)="seatChosen[sector.firstSeatNr+j*sector.numColumns+k] = !seatChosen[sector.firstSeatNr+j*sector.numColumns+k]
+                                   || pushToTickets(sector.firstSeatNr+j*sector.numColumns+k, 0, getSectorOrientation(sector), true)"
+                                  *ngIf="seatChosen[sector.firstSeatNr+j*sector.numColumns+k] && sector.seatStatusMap[j*sector.numColumns+k] === seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="sector.standing && isSectorOrientationNorth(sector)">
+                      <div class="btn btn-outline-primary" (click)="seatChosen[sector.firstSeatNr] = true">
+                        Standing Sector {{standingSectorDesignation[i]}} <br>
+                        {{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}} tickets available
+                        <div *ngIf="seatChosen[sector.firstSeatNr]">
+                          <input type="number"
+                                 class="form-control standing"
+                                 min="0"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationNorth(sector)">
+                      <div *ngFor="let r of [].constructor(sector.numRows); index as j" class="seat-row justify-content-center">
+                        <div class="btn btn-sm btn-outline-dark">{{incRowNumber(sector, j)}}</div>
+                        <div *ngFor="let c of [].constructor(sector.numColumns); index as k">
+                          <button class="btn btn-sm btn-dark"
+                                  *ngIf="sector.seatStatusMap[j*sector.numColumns+k] !== seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger"
+                                  (click)="(seatChosen[sector.firstSeatNr+j*sector.numColumns+k] = !seatChosen[sector.firstSeatNr+j*sector.numColumns+k])
+                                   && pushToTickets(sector.firstSeatNr+j*sector.numColumns+k, k+1, getSectorOrientation(sector), false)"
+                                  *ngIf="!seatChosen[sector.firstSeatNr+j*sector.numColumns+k] && sector.seatStatusMap[j*sector.numColumns+k] === seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                          <button class="btn btn-sm btn-success"
+                                  (click)="(seatChosen[sector.firstSeatNr+j*sector.numColumns+k] = !seatChosen[sector.firstSeatNr+j*sector.numColumns+k])
+                                   || pushToTickets(sector.firstSeatNr+j*sector.numColumns+k, 0, getSectorOrientation(sector), true)"
+                                  *ngIf="seatChosen[sector.firstSeatNr+j*sector.numColumns+k] && sector.seatStatusMap[j*sector.numColumns+k] === seatIsFree"
+                          >
+                            {{k+1}}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!sector">
+                    <span *ngIf="i===24; else noSector"> <div class="stage">Stage</div> </span>
+                    <ng-template #noSector></ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div *ngFor="let sector of stagePlan?.sectorArray; index as i">
+                  <div *ngIf="i===0">{{resetRowNumber()}}</div>
+                  <div *ngIf="sector">
+                    <div *ngIf="sector.standing && isSectorOrientationWest(sector)">
+                      <div class="btn btn-outline-primary" (click)="seatChosen[sector.firstSeatNr] = true">
+                        Standing Sector {{standingSectorDesignation[i]}} <br>
+                        {{sector.numSeats - (sector.numBoughtPlaces + sector.numReservedPlaces)}} tickets available
+                        <div *ngIf="seatChosen[sector.firstSeatNr]">
+                          <input type="number"
+                                 class="form-control standing"
+                                 min="0"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="!sector.standing && isSectorOrientationWest(sector)">
+                      <h3 class="sector-price">{{priceAsString(sector.price)}} €</h3>
+                      <div *ngFor="let c of [].constructor(sector.numColumns); index as j" class="seat-row justify-content-end">
+                        <div *ngFor="let r of [].constructor(sector.numRows); index as k">
+                          <div *ngIf="j===0" class="btn btn-sm btn-outline-dark seat-row">{{incRowNumber(sector, k)}}</div>
+                          <button class="btn btn-sm btn-dark west"
+                                  *ngIf="sector.seatStatusMap[k*sector.numColumns+j] !== seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger west"
+                                  (click)="(seatChosen[sector.firstSeatNr+k*sector.numColumns+j] = !seatChosen[sector.firstSeatNr+k*sector.numColumns+j])
+                                  && pushToTickets(sector.firstSeatNr+k*sector.numColumns+j, j+1, getSectorOrientation(sector), false)"
+                                  *ngIf="!seatChosen[sector.firstSeatNr+k*sector.numColumns+j] && sector.seatStatusMap[k*sector.numColumns+j] === seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                          <button class="btn btn-sm btn-success west"
+                                  (click)="(seatChosen[sector.firstSeatNr+k*sector.numColumns+j] = !seatChosen[sector.firstSeatNr+k*sector.numColumns+j])
+                                  || pushToTickets(sector.firstSeatNr+k*sector.numColumns+j, 0, getSectorOrientation(sector), true)"
+                                  *ngIf="seatChosen[sector.firstSeatNr+k*sector.numColumns+j] && sector.seatStatusMap[k*sector.numColumns+j] === seatIsFree"
+                          >
+                            {{j+1}}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

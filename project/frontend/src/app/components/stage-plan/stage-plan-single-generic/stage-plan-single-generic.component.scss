@@ -1,0 +1,112 @@
+
+.stage-plan-and-legend {
+  display: flex;
+  align-items: center;
+  width: max-content;
+}
+
+.seating-plan {
+  width: max-content;
+  background: lightskyblue;
+  padding: 0.5em;
+  border-radius: 10px;
+}
+
+.container{
+  width: max-content;
+}
+
+.categories {
+  margin-top: 0.3em;
+  margin-bottom: 1em;
+}
+
+.seat-row {
+  display: flex;
+  padding: 0.3em;
+  gap: 0.2em;
+}
+
+/*
+For a seat:
+ */
+.btn-outline-danger {
+  background: #FFFFFF;
+  border-width: 0.1em;
+  width: 2.9em;
+}
+
+.btn-outline-danger:hover {
+  background: red;
+}
+
+.east {
+  transform: rotate(270deg);
+}
+
+.west {
+  transform: rotate(90deg);
+}
+
+.btn-success {
+  border-width: 0.1em;
+  width: 2.9em;
+}
+
+.btn-outline-dark {
+  border-width: 0;
+  pointer-events: none;
+  padding: 0.2em;
+  width: 1.4em;
+}
+
+
+/*
+For a standing area:
+ */
+.btn-outline-primary {
+  background: #FFFFFF;
+  border-width: 0.2em;
+  height: 10em;
+  margin: 2em 2em 1em 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-outline-primary:hover {
+  background: blue;
+}
+
+.standing {
+  border-style: solid;
+  border-color: blue;
+  border-radius: 10px;
+  color: blue;
+  margin: 1em 1em 1em 1em;
+  width: 4em;
+  justify-content: center;
+  align-items: center;
+}
+
+.stage {
+  background: black;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 2em;
+  padding: 1.25em;
+  border-radius: 10px;
+}
+
+.seat-taken {
+  border-radius: 10px;
+  background: black;
+  width: 3em;
+  height: 3em;
+}
+
+.no-click {
+  pointer-events: none;
+}

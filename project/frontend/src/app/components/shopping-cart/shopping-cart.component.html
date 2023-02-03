@@ -1,0 +1,229 @@
+<h1 class="display-1">Your Shopping Cart</h1>
+
+<div class="order">
+  <div>
+    <table class="ticket-table">
+      <tr class="ticket-row">
+        <th id="merch-head">
+          <div>
+            <span>Merchandise</span>
+            <span *ngIf="merchArticles.length !== 0">
+            <a class="btn btn-sm responsive-danger-button" aria-label="Delete merch article" (click)="deleteAllMerch()">
+              <i class="bi bi-trash"></i>
+            </a>
+          </span>
+          </div>
+        </th>
+      </tr>
+    </table>
+    <div *ngFor="let article of merchArticles" class="merch">
+      <div class="merch-img">
+        <img src="{{article.image}}" alt="{{getArticleName(article)}} image" routerLink="/merchandise/{{article.articleNr}}">
+      </div>
+      <div>
+        <div>
+          <h4>{{getArticleName(article)}}</h4>
+        </div>
+        <div class="merch-options">
+          <div>
+            <label for="purchase-option" class ="col-form-label bold">
+              Payment
+            </label>
+            <select id="purchase-option"
+                    [(ngModel)]="article.bonusUsed"
+                    (ngModelChange)="updateMerch(article)">
+              <option value="{{false}}">Money</option>
+              <option value="{{true}}" [disabled]="!pointPurchaseAvailable(article)">Points</option>
+            </select>
+          </div>
+          <div>
+            <label for="merch-amount" class ="col-form-label bold">
+              Amount
+            </label>
+            <select id="merch-amount"
+                    [(ngModel)]="article.articleCount"
+                    (change)="updateMerch(article)"
+                    *ngIf="!article.bonusUsed">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+            </select>
+            <select id="merch-amount-bonus"
+                    [(ngModel)]="article.articleCount"
+                    (change)="updateMerch(article)"
+                    *ngIf="article.bonusUsed">
+              <option *ngFor="let amount of article.allowedPointAmount">{{amount}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="merch-col-3">
+        <div class="merch-delete">
+          <a class="btn btn-sm responsive-danger-button" aria-label="Delete merch article" (click)="deleteMerch(article.articleNr)">
+            <i class="bi bi-trash"></i>
+          </a>
+        </div>
+        <div class="merch-delete" *ngIf="!article.bonusUsed">{{priceAsString(article.price * article.articleCount)}}</div>
+        <div class="merch-delete" *ngIf="article.bonusUsed">{{article.bonusPointPrice * article.articleCount}} Points</div>
+      </div>
+    </div>
+    <div *ngIf="merchArticles.length === 0" class="empty-cart">
+      <div>No Merch</div>
+      <button type="button" class="btn btn-info dist-hor" routerLink="/merchandise">
+        <span>Purchase Merch</span>
+        <i class="bi bi-cart-plus-fill"></i>
+      </button>
+    </div>
+  </div>
+  <div>
+    <table class="ticket-table">
+      <tr class="ticket-row">
+        <th [ngClass]="pickedAll" (click)="setPickedPurchases('picked-all')">
+          <div>
+            <span class="{{tickets.length !== 0 ? '' : 'button-height-adjustment'}}">All Tickets</span>
+            <span *ngIf="tickets.length !== 0">
+            <a class="btn btn-sm responsive-danger-button" aria-label="Delete merch article" (click)="deleteAllTickets(null);$event.stopPropagation()">
+              <i class="bi bi-trash"></i>
+            </a>
+          </span>
+          </div>
+        </th>
+        <th [ngClass]="pickedPurchases" (click)="setPickedPurchases('picked-purchases')">
+          <div>
+            <span>Tickets for Purchase</span>
+            <span *ngIf="getTicketStatusAmount('PURCHASED') !== 0">
+            <a class="btn btn-sm responsive-danger-button" aria-label="Delete merch article" (click)="deleteAllTickets('PURCHASED');$event.stopPropagation()">
+              <i class="bi bi-trash"></i>
+            </a>
+          </span>
+          </div>
+        </th>
+        <th [ngClass]="pickedReservations"  (click)="setPickedPurchases('picked-reservations')">
+          <div>
+            <span>Reserved Tickets</span>
+            <span *ngIf="getTicketStatusAmount('RESERVED') !== 0">
+            <a class="btn btn-sm responsive-danger-button" aria-label="Delete merch article" (click)="deleteAllTickets('RESERVED');$event.stopPropagation()">
+              <i class="bi bi-trash"></i>
+            </a>
+          </span>
+          </div>
+        </th>
+      </tr>
+    </table>
+
+    <div *ngFor="let ticket of filteredTickets" class="ticket border-white {{ticket.reservation === 'PURCHASED' ? 'outline-android-green' : ''}}">
+      <div class="ticket-header">
+        <div class="event-act-name">
+          <div class="event-name">{{ticket.act.event.name.toUpperCase()}}</div>
+          <div class="act-name {{ticket.reservation === 'RESERVED' ? 'light-blue-font-2' : 'android-green-font'}}">{{evalTicketType(ticket.reservation)}}</div>
+        </div>
+        <div class="ticket-buttons">
+          <div class="timer" *ngIf="ticket.remainingTime.minutes > 0 || ticket.remainingTime.seconds > 0">
+            <div>Expires in</div>
+            <div>{{ticket.remainingTime.minutes}} min {{ticket.remainingTime.seconds}} s</div>
+          </div>
+          <div class="timer" *ngIf="ticket.remainingTime.minutes <= 0 && ticket.remainingTime.seconds <= 0">EXPIRED</div>
+          <div class="reserve-cancel-btn" *ngIf="ticket.remainingTime.minutes > 0 || ticket.remainingTime.seconds > 0">
+            <a *ngIf="ticket.reservation === 'PURCHASED'"
+               class="btn btn-sm responsive purchase-btn"
+               aria-label="Change ticket to reservation"
+               title="Change ticket to a reservation"
+               (click)="ticketUpdate(ticket)">
+              <i class="bi bi-calendar"></i>
+            </a>
+            <a *ngIf="ticket.reservation === 'RESERVED'"
+               class="btn btn-sm responsive reserve-btn"
+               aria-label="Change ticket to purchase"
+               title="Change ticket to a purchase"
+               (click)="ticketUpdate(ticket)">
+              <i class="bi bi-currency-dollar"></i>
+            </a>
+            <a class="btn btn-sm responsive-danger-button"
+               aria-label="Delete ticket"
+               title="Remove ticket from the shopping list"
+               (click)="openDelete(contentDelete, ticket)">
+              <i class="bi bi-trash"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="ticket-main">
+        <div class="ticket-arena">
+          <div>{{ticket.act.event.location.venueName}}</div>
+          <div class="seat">
+            <div *ngIf="ticket.seatNo === 0">Sector: {{ticket.sectorDesignation}}</div>
+            <div *ngIf="ticket.seatNo === 0">Standing Ticket</div>
+            <div *ngIf="ticket.seatNo !== 0">Row: {{ticket.rowNumber}}</div>
+            <div *ngIf="ticket.seatNo !== 0">Seat: {{ticket.seatNoInRow}}</div>
+          </div>
+        </div>
+        <div class="ticket-details">
+          <div>{{getStart(ticket.act.start)}}</div>
+          <div class="location">{{ticket.act.event.location.address.street}}</div>
+          <div>{{ticket.act.event.location.address.city}}, {{ticket.act.event.location.address.country}}</div>
+        </div>
+        <div class="price" *ngIf="ticket.reservation.toString() === 'RESERVED'">Purchase on site</div>
+        <div class="price" *ngIf="ticket.reservation.toString() === 'PURCHASED'">{{priceAsString(ticket.price)}}</div>
+      </div>
+    </div>
+    <div class="empty-cart" *ngIf="tickets.length === 0">
+      <div>No Tickets</div>
+      <button type="button" class="btn btn-info dist-hor" routerLink="/events">
+        <span>Purchase Tickets</span>
+        <i class="bi bi-ticket-perforated-fill"></i>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="checkout">
+  <div class="price-summary">
+    <div>Tickets for purchase:</div>
+    <div>{{priceAsString(ticketPurchaseTotalPrice())}}</div>
+    <div>Merchandise in Cash:</div>
+    <div>{{priceAsString(merchTotalPrice())}}</div>
+    <div>Merchandise in Points:</div>
+    <div>{{merchPointsTotalPrice()}} Points</div>
+    <div class="total-price">Total:</div>
+    <div class="total-price">{{priceAsString(cartTotalPrice())}}</div>
+  </div>
+</div>
+<!-- if not all tickets are reservations -->
+<app-checkout *ngIf="!allTicketsReservations()"></app-checkout>
+<!-- if all tickets are reservations -->
+<div class="mt-4 d-flex flex-row" *ngIf="allTicketsReservations()">
+  <span class="flex-grow-1"></span>
+  <button class="btn btn-primary" type="submit" (click)="onReserve()" [disabled]="merchArticles.length === 0 && tickets.length === 0">
+    Reserve
+  </button>
+</div>
+
+<ng-template #contentDelete let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Confirm Delete</h4>
+    <i class="bi bi-x-circle-fill modal-circle" (click)="modal.dismiss('Cross-click')"></i>
+  </div>
+  <div class="modal-body">
+    <div class="text-center confirm-delete">Are you sure you want to delete this ticket from your shopping cart?</div>
+    <div class="text-center">
+      <button data-dismiss="modal"
+              class="btn btn-danger"
+              (click)="deleteTicket()">
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-outline-dark"
+            (click)="modal.close('Save click')">
+      Cancel
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,103 @@
+<div class="col-auto">
+  <div class="row" >
+    <div class="card" id="title">
+      <div class="card-header">
+        <h1 class="card-title">{{event?.name}}</h1>
+        <h3 class="card-subtitle mb-2">{{event?.location.address.postalCode}}
+          {{event?.location.address.city}},
+          {{event?.location.address.street}}</h3>
+        <p class="card-text">{{event?.description}}</p>
+      </div>
+    </div>
+  </div>
+  <form class="d-flex flex-row w-auto mb-3" [formGroup]="searchForm" (ngSubmit)="searchActs()">
+    <button type="submit" hidden="true">submit</button>
+    <div class = "flex-grow-2">
+      <label for="minPrice" class ="col-form-label">Minimum price (€)</label>
+      <input type="number" id="minPrice" placeholder="€" class="form-control" formControlName="minPrice" [defaultValue]="defaultFrom">
+    </div>
+    <div class = "flex-grow-2">
+      <label for="maxPrice" class ="col-form-label">Maximum price (€)</label>
+      <input type="number" id="maxPrice" class="form-control" formControlName="maxPrice">
+    </div>
+    <div class = "flex-grow-1">
+      <label for="searchDateFrom" class ="col-form-label">
+        From
+      </label>
+      <input type="date"
+             name="searchTime"
+             class="form-control"
+             id="searchDateFrom"
+             formControlName="dateFrom"
+      >
+    </div>
+    <div class = "flex-grow-1">
+      <label for="searchDateTo" class ="col-form-label">
+        To
+      </label>
+      <input type="date"
+             name="searchTimeTo"
+             class="form-control"
+             id="searchDateTo"
+             formControlName="dateTo"
+      >
+    </div>
+
+    <button
+      class="btn btn-primary mr-1"
+      type="button"
+      (click)="searchActs()"
+      style="margin-top: 2.4em; margin-left: 0.2em; margin-right: 0.2em"
+    >
+      Apply Filter
+    </button>
+  </form>
+</div>
+
+<div class="col-auto">
+  <div clas="row">
+    <div *ngIf="acts.length === 0" class="card shadow">
+      <div class="card-body">
+        <h5 *ngIf="!searchForm.touched" class="card-title">There are currently no acts for this event</h5>
+        <h5 *ngIf="searchForm.touched" class="card-title">There are no acts for this event matching your search results</h5>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngFor="let act of acts; index as i">
+    <div *ngIf="!actIsOver(act.start)" class="card shadow">
+      <div class="card-body">
+        <h5 class="card-title">{{getStart(act.start)}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{event?.duration}} minutes</h6>
+        <button *ngIf="!isAdmin()&&isLoggedIn()" type="button" class="btn btn-success" [routerLink]="['tickets', act.id, 'buy']">
+          Buy tickets
+        </button>
+        <button *ngIf="!isAdmin()&&isLoggedIn()" type="button" class="btn btn-success" style="margin-left: 10px" [routerLink]="['tickets', act.id, 'reserve']">
+          Reserve tickets
+        </button>
+        <button *ngIf="isAdmin()" type="button" class="btn btn-primary" [routerLink]="['tickets', act.id]">
+          View Stage
+        </button>
+        <h6 *ngIf="!isLoggedIn()">
+          <button *ngIf="!isLoggedIn()" type="button" class="btn btn-outline-success" routerLink="/" (click)="router.navigate(['/login'], {state:{redirect: this.router.url}})">
+            Login
+          </button>
+          or
+          <button *ngIf="!isLoggedIn()" type="button" class="btn btn-outline-success" routerLink="/" (click)="router.navigate(['/registration'], {state:{redirect: this.router.url}})">
+            Register
+          </button>
+          to buy tickets
+        </h6>
+      </div>
+    </div>
+    <div *ngIf="actIsOver(act.start) && isAdmin()" class="card shadow" id="isOver">
+      <div class="card-body">
+        <h5 class="card-title">{{getStart(act.start)}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{event?.duration}} minutes</h6>
+        <button *ngIf="isAdmin()" type="button" class="btn btn-primary" [routerLink]="['tickets', act.id]">
+          View Stage
+        </button>
+        <h6>Act is in the past!</h6>
+      </div>
+    </div>
+  </div>
+</div>

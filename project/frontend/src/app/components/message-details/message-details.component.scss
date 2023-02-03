@@ -1,0 +1,29 @@
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.col-6 {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+}
+
+
+.card-text {
+  margin: 1em auto;
+  width: 90%;
+  font-size: larger ;
+}
+
+.card-header {
+  background: #021f54;
+  color: white;
+}
+
+.format {
+  white-space: pre-line;
+}

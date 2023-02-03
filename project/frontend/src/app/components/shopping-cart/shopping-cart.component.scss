@@ -1,0 +1,313 @@
+@import "src/styles";
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600&family=Poppins:wght@600&family=Roboto:wght@300;400;500;700&display=swap');
+
+.order {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 2em;
+  margin-top: 2em;
+}
+.merch {
+  // display: flex;
+  // justify-content: space-between;
+  display: grid;
+  grid-template-columns: 100px 2fr 1fr;
+  // align-items: center;
+  padding: 0.75em;
+  border-style: solid;
+  border-color: black;
+  border-radius: 0.55rem;
+  margin: 0.5em 0;
+}
+.merch select {
+  padding: 0.25em;
+  border-style: none;
+}
+
+.seat {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
+}
+
+.event-name {
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+
+.act-name {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+
+.ticket-main {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  text-align: center;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price {
+  text-align: right;
+  font-weight: bold;
+  align-self: flex-end;
+}
+
+.merch > .price {
+  align-self: center;
+}
+
+.ticket-arena {
+  align-self: flex-end;
+}
+
+.ticket {
+  padding: 1em;
+  border-radius: 0.55rem;
+  background: #021f54;
+  color: white;
+  margin: 1em 0;
+}
+
+.btn.btn-sm.responsive-danger-button {
+  background: red;
+  color: #FFFFFF;
+}
+
+.btn.btn-sm.responsive.purchase-btn {
+  background: var(--light-blue-2);
+}
+
+.btn.btn-sm.responsive.reserve-btn {
+  background: var(--android-green);
+  color: #FFFFFF;
+}
+
+// Style for "Merchandise" and Ticket Options ("All Tickets", "Tickets for Purchase", "Reserved Tickets")
+.ticket-table {
+  width: 100%;
+  background: #DCDCDC;
+
+  padding: 0.25em 0;
+  margin:  0.5em 0 1em 0;
+
+  border-style: none;
+  border-radius: 25px;
+}
+.ticket-table tr {
+  padding: 0.25em 0;
+  text-align: center;
+}
+table th {
+  padding: 0.25em 0;
+  border-left: 2px solid #FFF;
+  border-right: 2px solid #FFF;
+}
+table th:first-child {
+  border-left: none;
+}
+table th:last-child {
+  border-right: none;
+}
+.not-picked {
+  width: calc(100%/3);
+  border-color: #505050;
+  cursor: pointer;
+}
+
+.picked-all {
+  width: calc(100%/3);
+  color: white;
+  background: #021f54;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+.picked-purchases {
+  width: calc(100%/3);
+  color: white;
+  background: #021f54;
+}
+.picked-reservations {
+  width: calc(100%/3);
+  color: white;
+  background: #021f54;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+}
+
+// Style for Checkout div
+.checkout {
+  text-align: right;
+  margin: 0 0 0 auto;
+  width: 35%;
+}
+.price-summary {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+.total-price {
+  margin: 0.5em 0 ;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+.checkout button {
+  border: none;
+  color: white;
+  background: black;
+  padding: 0.75em 2em;
+}
+
+.empty-cart {
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  display: grid;
+  gap: 10px;
+  margin-bottom: 1em;
+}
+.empty-cart:last-child {
+  justify-content: center;
+}
+.empty-cart > button {
+  font-size: 20px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+.dist-hor {
+  display: flex;
+  gap: 20px;
+}
+
+.confirm-delete {
+  font-size: 1.25em;
+  font-weight: 600;
+  padding: 0.5em;
+}
+
+.border-white {
+  border: solid 2px #FFFFFF;
+}
+
+.outline-android-green {
+  outline: solid 4px #32de84;
+}
+img {
+  max-width: 80px;
+  cursor: pointer;
+}
+.merch-info {
+  padding-left: 0.5rem;
+}
+.merch-img {
+  display: flex;
+  align-items: center;
+}
+.merch-delete {
+  display: flex;
+  justify-content: flex-end;
+}
+.merch-col-3 {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+h4 {
+  letter-spacing: 1px;
+}
+
+.btn-primary {
+  background: #021f54;
+  color: white;
+  border: #021F54;
+}
+/*
+.ticket-row > th {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+}
+ */
+.ticket-buttons {
+  display: flex;
+  align-items: end;
+  flex-direction: column;
+  gap:10px;
+}
+.timer {
+  font-size: 22px;
+  font-family: 'Poppins', sans-serif;
+  color: #FFFFFF;
+  background: #000000;
+  border-radius: 5px;
+  padding: 0.2rem 0.5rem;
+}
+.timer > div:first-child {
+  font-size: 15px;
+  text-align: end;
+}
+th > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.reserve-cancel-btn {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.button-height-adjustment {
+  padding: 3.3px 0;
+}
+@media (max-width: 1200px) {
+  .order {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 1000px) {
+  .checkout {
+    width: 50%;
+  }
+}
+@media (max-width: 800px) {
+  .timer {
+    font-size: 16px;
+  }
+  .order {
+    font-size: 90%;
+  }
+  .btn.btn-sm{
+    font-size: 90%;
+  }
+  .event-name {
+    font-size: 26px;
+  }
+  .act-name {
+    font-size: 18px;
+  }
+  .ticket-main {
+    font-size: 12px;
+  }
+}
+@media (max-width: 770px) {
+  .checkout {
+    width: 60%;
+  }
+}
+@media (max-width: 550px) {
+  .checkout {
+    width: 60%;
+  }
+  .timer {
+    font-size: 13px;
+  }
+}
+@media (max-width: 400px) {
+  .checkout {
+    width: 90%;
+  }
+}
